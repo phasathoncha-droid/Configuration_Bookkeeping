@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMS - Organization Unit Configuration</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --primary:        #378ADD;
+      --primary-dark:   #0C447C;
+      --primary-darker: #003D99;
+      --primary-light:  #E8F2FF;
+      --success:        #639922;
+      --success-light:  #F0F7E6;
+      --danger:         #E24B4A;
+      --danger-light:   #FEF2F2;
+      --warning:        #D97706;
+      --warning-light:  #FFFBEB;
+      --bg-primary:     #FFFFFF;
+      --bg-secondary:   #F8F9FB;
+      --border:         #E0E3E8;
+      --text-primary:   #1A1D23;
+      --text-secondary: #6B7280;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    /* ── App Header ── */
+    .app-header {
+      background: linear-gradient(135deg, var(--primary-darker) 0%, var(--primary-dark) 100%);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .app-header .brand { display: flex; align-items: center; gap: 10px; }
+    .app-header .brand-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+    .app-header .brand-text { color: #fff; font-size: 15px; font-weight: 600; }
+    .app-header .header-right { display: flex; align-items: center; gap: 12px; }
+    .app-header .user-info { color: rgba(255,255,255,0.8); font-size: 13px; }
+    .btn-logout {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.2); }
+
+    /* ── Page Container ── */
+    .page-container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+    /* ── Page Header ── */
+    .page-header { margin-bottom: 1.25rem; }
+    .page-title { font-size: 22px; font-weight: 600; color: var(--text-primary); }
+    .page-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
+
+    /* ── Page Alert ── */
+    #pageAlertArea { margin-bottom: 1rem; }
+    .alert-success {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px;
+      background: var(--success-light);
+      border: 1px solid #A3D66A;
+      border-radius: 8px;
+      color: #2D5A0A;
+      font-size: 13px; font-weight: 500;
+    }
+    .alert-success .alert-close {
+      margin-left: auto; cursor: pointer; font-size: 16px;
+      background: none; border: none; color: inherit; line-height: 1;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0.625rem 1.25rem;
+      border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: #ECEEF2; }
+    .btn-sm { padding: 0.375rem 0.75rem; font-size: 12px; font-weight: 500; }
+    .btn-edit {
+      background: var(--bg-secondary);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+    .btn-edit:hover { background: var(--primary-light); border-color: var(--primary); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* ── Table Toolbar ── */
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .toolbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .table-search-wrap { position: relative; flex: 1; max-width: 420px; }
+    .table-search-icon {
+      position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+      pointer-events: none;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .table-search-icon svg { display: block; }
+    .table-search-input {
+      width: 100%;
+      padding: 0.55rem 2.5rem 0.55rem 2.6rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .table-search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.15);
+    }
+    .table-search-clear {
+      position: absolute; right: 9px; top: 50%; transform: translateY(-50%);
+      background: none; border: none;
+      color: var(--text-secondary); font-size: 15px;
+      cursor: pointer; line-height: 1; padding: 2px 4px; display: none;
+    }
+    .table-search-clear:hover { color: var(--danger); }
+    .table-search-clear.visible { display: block; }
+    .status-filter-select {
+      width: 140px;
+      padding: 0.55rem 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .status-filter-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.15);
+    }
+
+    /* ── Table ── */
+    .table-wrapper { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 280px); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { position: sticky; top: 0; z-index: 1; background: var(--bg-secondary); }
+    thead tr { background: var(--bg-secondary); border-bottom: 2px solid var(--border); }
+    thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #FAFBFD; }
+    tbody td { padding: 13px 16px; font-size: 13px; vertical-align: middle; color: var(--text-primary); }
+    tbody tr.row-inactive { opacity: 0.7; }
+    .mono { font-family: 'Courier New', monospace; font-size: 12px; font-weight: 600; color: var(--text-primary); }
+
+    /* ── Status Badge ── */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px; font-weight: 600;
+    }
+    .status-badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+    }
+    .status-active   { background: #ECFDF5; color: #065F46; }
+    .status-active::before { background: #10B981; }
+    .status-inactive { background: #F3F4F6; color: #6B7280; }
+    .status-inactive::before { background: #9CA3AF; }
+
+    /* ── Empty State ── */
+    .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
+    .empty-state p { font-size: 14px; }
+
+    /* ── Modal Backdrop ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    /* ── Modal ── */
+    .modal {
+      background: var(--bg-primary);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 860px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      animation: modalIn 0.2s ease;
+      margin: auto;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--primary-darker), var(--primary-dark));
+      border-radius: 14px 14px 0 0;
+    }
+    .modal-title { font-size: 18px; font-weight: 700; color: #fff; }
+    .modal-subtitle { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+    .modal-close {
+      background: rgba(255,255,255,0.12);
+      border: none; color: #fff;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.22); }
+    .modal-body { padding: 1.5rem; }
+    .modal-footer {
+      display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg-secondary);
+      border-radius: 0 0 14px 14px;
+    }
+
+    /* ── Modal Alert (validation) ── */
+    .alert {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 1rem;
+    }
+    .alert-danger { background: var(--danger-light); border: 1px solid #FCA5A5; color: #991B1B; }
+    .alert-danger .alert-close {
+      margin-left: auto; cursor: pointer; font-size: 16px;
+      background: none; border: none; color: inherit; line-height: 1;
+    }
+
+    /* ── Layer Card ── */
+    .layer-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      background: var(--bg-primary);
+    }
+    .layer-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 8px; margin-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .layer-card-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--text-secondary);
+    }
+
+    /* ── Form ── */
+    .form-row { display: grid; gap: 1rem; }
+    .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .form-label .req { color: var(--danger); margin-left: 2px; }
+    .form-control {
+      padding: 0.625rem 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      font-family: inherit;
+      width: 100%;
+    }
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.15);
+    }
+    .form-control.mono-input {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .form-hint { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* ── Toggle Switch ── */
+    .toggle-wrap {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+    }
+    .toggle-track {
+      position: relative;
+      width: 44px; height: 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-track.on  { background: var(--primary); }
+    .toggle-track.off { background: #9CA3AF; }
+    .toggle-thumb {
+      position: absolute;
+      top: 3px;
+      width: 18px; height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      transition: left 0.2s;
+    }
+    .toggle-track.on  .toggle-thumb { left: 23px; }
+    .toggle-track.off .toggle-thumb { left: 3px; }
+    .toggle-label { color: var(--text-secondary); font-weight: 500; }
+    .toggle-label.on  { color: var(--primary-dark); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ══ App Header ══ -->
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-icon">
+      <img src="data:image/png;base64,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" alt="AMS Logo" style="width:32px;height:32px;object-fit:contain;" />
+    </div>
+    <span class="brand-text">Accounting Management System</span>
+  </div>
+  <div class="header-right">
+    <span class="user-info">phasathon.cha@turbo.co.th</span>
+    <button class="btn-logout">Log Out</button>
+  </div>
+</header>
+
+<!-- ══ Page Content ══ -->
+<div class="page-container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title">Organization Unit Configuration</div>
+  </div>
+
+  <!-- Page Alert Area -->
+  <div id="pageAlertArea"></div>
+
+  <!-- Main Card -->
+  <div class="card">
+    <!-- Toolbar -->
+    <div class="table-toolbar">
+      <div class="table-search-wrap">
+        <span class="table-search-icon">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <circle cx="5.5" cy="5.5" r="4" stroke="#378ADD" stroke-width="1.5"/>
+            <line x1="8.7" y1="8.7" x2="11.5" y2="11.5" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <input type="text" id="searchInput" class="table-search-input" placeholder="Search units..." autocomplete="off" />
+        <button class="table-search-clear" id="searchClear" title="Clear search">✕</button>
+      </div>
+      <div class="toolbar-right">
+        <select id="statusFilter" class="status-filter-select">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="all">All Status</option>
+        </select>
+        <button class="btn btn-primary" onclick="openCreateOuModal()">Create New</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <table id="ouTable">
+        <thead>
+          <tr>
+            <th>Unit Code</th>
+            <th>Unit Name</th>
+            <th>Unit Type</th>
+            <th>Profit Center</th>
+            <th>Cost Center</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="ouTableBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page-container -->
+
+<!-- ══ Modal Backdrop ══ -->
+<div class="modal-backdrop" id="ouModalBackdrop" onclick="handleBackdropClick(event)">
+  <div class="modal" id="ouModal">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="ouModalTitle">Create New Organization Unit</div>
+        <div class="modal-subtitle" id="ouModalSubtitle">Add a new unit to the system</div>
+      </div>
+      <button class="modal-close" onclick="closeOuModal()">✕</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+
+      <!-- Validation Alert -->
+      <div id="ouModalAlertArea"></div>
+
+      <!-- Layer Card: Unit Details -->
+      <div class="layer-card">
+        <div class="layer-card-header">
+          <span class="layer-card-title">Unit Details</span>
+          <!-- Status toggle shown in edit mode only -->
+          <div class="toggle-wrap" id="ouStatusToggleWrap" style="display:none;">
+            <span class="toggle-label" id="ouToggleLabel">Active</span>
+            <div class="toggle-track on" id="ouToggleTrack" onclick="toggleOuStatus()">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit Code — full row -->
+        <div class="form-row" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">Unit Code <span class="req">*</span></label>
+            <input type="text" id="ouUnitCode" class="form-control mono-input" maxlength="20" placeholder="e.g. NBI001" autocomplete="off" oninput="this.value = this.value.toUpperCase()" />
+          </div>
+        </div>
+
+        <!-- Unit Name + Unit Type — 2 columns -->
+        <div class="form-row cols-2" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">Unit Name <span class="req">*</span></label>
+            <input type="text" id="ouUnitName" class="form-control" placeholder="e.g. สาขาลาดพร้าว" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Unit Type <span class="req">*</span></label>
+            <select id="ouUnitType" class="form-control">
+              <option value="">-- Select Type --</option>
+              <option value="1">Branch</option>
+              <option value="3">Department</option>
+              <option value="2">Employee</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Profit Center + Cost Center — 2 columns -->
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Profit Center <span class="req">*</span></label>
+            <input type="text" id="ouProfitCenter" class="form-control mono-input" maxlength="10" placeholder="10-digit code" autocomplete="off" inputmode="numeric" />
+            <span class="form-hint">Exactly 10 digits</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cost Center <span class="req">*</span></label>
+            <input type="text" id="ouCostCenter" class="form-control mono-input" maxlength="8" placeholder="8-digit code" autocomplete="off" inputmode="numeric" />
+            <span class="form-hint">Exactly 8 digits</span>
+          </div>
+        </div>
+
+      </div><!-- /layer-card -->
+
+    </div><!-- /modal-body -->
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeOuModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveOuUnit()">Save Unit</button>
+    </div>
+
+  </div><!-- /modal -->
+</div><!-- /modal-backdrop -->
+
+
+<script>
+  // ─── Data ───────────────────────────────────────────────────────────────────
+  const UNIT_TYPE_MAP = { 1: 'Branch', 2: 'Employee', 3: 'Department' };
+
+  let ouData = [
+    { id: 1, unitCode: 'NBI001', unitName: 'สำนักงานใหญ่',        unitTypeId: 1, profitCenter: '1000000001', costCenter: '10000001', isActive: true  },
+    { id: 2, unitCode: 'NBI002', unitName: 'สาขาลาดพร้าว',        unitTypeId: 1, profitCenter: '1000000002', costCenter: '10000002', isActive: true  },
+    { id: 3, unitCode: 'NBI003', unitName: 'สาขาสีลม',            unitTypeId: 1, profitCenter: '1000000003', costCenter: '10000003', isActive: true  },
+    { id: 4, unitCode: 'NBI004', unitName: 'สาขาเชียงใหม่',       unitTypeId: 1, profitCenter: '1000000004', costCenter: '10000004', isActive: true  },
+    { id: 5, unitCode: 'DEP001', unitName: 'ฝ่ายบัญชี',           unitTypeId: 3, profitCenter: '2000000001', costCenter: '20000001', isActive: true  },
+    { id: 6, unitCode: 'DEP002', unitName: 'ฝ่ายการเงิน',         unitTypeId: 3, profitCenter: '2000000002', costCenter: '20000002', isActive: true  },
+    { id: 7, unitCode: 'EMP001', unitName: 'นายสมชาย ใจดี',       unitTypeId: 2, profitCenter: '3000000001', costCenter: '30000001', isActive: false },
+    { id: 8, unitCode: 'EMP002', unitName: 'นางสาวสมหญิง รักงาน', unitTypeId: 2, profitCenter: '3000000002', costCenter: '30000002', isActive: true  },
+  ];
+
+  let ouNextId = 9;
+  let ouEditingId = null;
+  let ouStatusActive = true; // tracks toggle state during edit
+
+  // ─── Render Table ────────────────────────────────────────────────────────────
+  function renderOuTable() {
+    const searchVal  = document.getElementById('searchInput').value.trim().toLowerCase();
+    const statusVal  = document.getElementById('statusFilter').value;
+    const tbody      = document.getElementById('ouTableBody');
+
+    const filtered = ouData.filter(row => {
+      // Status filter
+      if (statusVal === 'active'   && !row.isActive) return false;
+      if (statusVal === 'inactive' &&  row.isActive) return false;
+
+      // Search filter
+      if (searchVal) {
+        const typeLabel = (UNIT_TYPE_MAP[row.unitTypeId] || '').toLowerCase();
+        const haystack  = [row.unitCode, row.unitName, typeLabel].join(' ').toLowerCase();
+        if (!haystack.includes(searchVal)) return false;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><p>No records found.</p></div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(row => {
+      const typeLabel    = UNIT_TYPE_MAP[row.unitTypeId] || '';
+      const statusClass  = row.isActive ? 'status-active' : 'status-inactive';
+      const statusText   = row.isActive ? 'Active' : 'Inactive';
+      const rowClass     = row.isActive ? '' : 'row-inactive';
+      const pcDisplay    = row.profitCenter ? `<span class="mono">${row.profitCenter}</span>` : '';
+      const ccDisplay    = row.costCenter   ? `<span class="mono">${row.costCenter}</span>`   : '';
+
+      return `
+        <tr class="${rowClass}" data-id="${row.id}">
+          <td><span class="mono">${row.unitCode}</span></td>
+          <td>${row.unitName}</td>
+          <td>${typeLabel}</td>
+          <td>${pcDisplay}</td>
+          <td>${ccDisplay}</td>
+          <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+          <td><button class="btn btn-sm btn-edit" onclick="openEditOuModal(${row.id})">Edit</button></td>
+        </tr>`;
+    }).join('');
+  }
+
+  // ─── Search & Filter Listeners ───────────────────────────────────────────────
+  document.getElementById('searchInput').addEventListener('input', function () {
+    const clearBtn = document.getElementById('searchClear');
+    if (this.value) { clearBtn.classList.add('visible'); } else { clearBtn.classList.remove('visible'); }
+    renderOuTable();
+  });
+  document.getElementById('searchClear').addEventListener('click', function () {
+    document.getElementById('searchInput').value = '';
+    this.classList.remove('visible');
+    renderOuTable();
+  });
+  document.getElementById('statusFilter').addEventListener('change', renderOuTable);
+
+  // ─── Open Create Modal ───────────────────────────────────────────────────────
+  function openCreateOuModal() {
+    ouEditingId = null;
+    ouStatusActive = true;
+
+    document.getElementById('ouModalTitle').textContent    = 'Create New Organization Unit';
+    document.getElementById('ouModalSubtitle').textContent = 'Add a new unit to the system';
+
+    // Clear fields
+    document.getElementById('ouUnitCode').value      = '';
+    document.getElementById('ouUnitName').value      = '';
+    document.getElementById('ouUnitType').value      = '';
+    document.getElementById('ouProfitCenter').value  = '';
+    document.getElementById('ouCostCenter').value    = '';
+
+    // Hide status toggle in create mode
+    document.getElementById('ouStatusToggleWrap').style.display = 'none';
+
+    // Clear alert
+    document.getElementById('ouModalAlertArea').innerHTML = '';
+
+    // Open
+    document.getElementById('ouModalBackdrop').classList.add('open');
+  }
+
+  // ─── Open Edit Modal ─────────────────────────────────────────────────────────
+  function openEditOuModal(id) {
+    const row = ouData.find(r => r.id === id);
+    if (!row) return;
+
+    ouEditingId    = id;
+    ouStatusActive = row.isActive;
+
+    document.getElementById('ouModalTitle').textContent    = 'Edit Organization Unit';
+    document.getElementById('ouModalSubtitle').textContent = 'Update unit details';
+
+    // Populate fields
+    document.getElementById('ouUnitCode').value     = row.unitCode;
+    document.getElementById('ouUnitName').value     = row.unitName;
+    document.getElementById('ouUnitType').value     = String(row.unitTypeId);
+    document.getElementById('ouProfitCenter').value = row.profitCenter;
+    document.getElementById('ouCostCenter').value   = row.costCenter;
+
+    // Show & sync status toggle
+    document.getElementById('ouStatusToggleWrap').style.display = 'flex';
+    syncToggleUI();
+
+    // Clear alert
+    document.getElementById('ouModalAlertArea').innerHTML = '';
+
+    // Open
+    document.getElementById('ouModalBackdrop').classList.add('open');
+  }
+
+  // ─── Close Modal ─────────────────────────────────────────────────────────────
+  function closeOuModal() {
+    document.getElementById('ouModalBackdrop').classList.remove('open');
+  }
+
+  function handleBackdropClick(e) {
+    if (e.target === document.getElementById('ouModalBackdrop')) {
+      closeOuModal();
+    }
+  }
+
+  // ─── Toggle Status ────────────────────────────────────────────────────────────
+  function toggleOuStatus() {
+    ouStatusActive = !ouStatusActive;
+    syncToggleUI();
+  }
+
+  function syncToggleUI() {
+    const track = document.getElementById('ouToggleTrack');
+    const label = document.getElementById('ouToggleLabel');
+    if (ouStatusActive) {
+      track.className = 'toggle-track on';
+      label.textContent = 'Active';
+      label.className = 'toggle-label on';
+    } else {
+      track.className = 'toggle-track off';
+      label.textContent = 'Inactive';
+      label.className = 'toggle-label';
+    }
+  }
+
+  // ─── Show Modal Alert ────────────────────────────────────────────────────────
+  function showModalAlert(msg) {
+    document.getElementById('ouModalAlertArea').innerHTML = `
+      <div class="alert alert-danger">
+        <span>${msg}</span>
+        <button class="alert-close" onclick="this.closest('.alert').remove()">✕</button>
+      </div>`;
+  }
+
+  // ─── Show Page Success Alert ─────────────────────────────────────────────────
+  function showPageSuccess(msg) {
+    const area = document.getElementById('pageAlertArea');
+    area.innerHTML = `
+      <div class="alert-success">
+        <span>${msg}</span>
+        <button class="alert-close" onclick="this.closest('.alert-success').remove()">✕</button>
+      </div>`;
+    setTimeout(() => { area.innerHTML = ''; }, 6000);
+  }
+
+  // ─── Save Unit ───────────────────────────────────────────────────────────────
+  function saveOuUnit() {
+    const unitCode     = document.getElementById('ouUnitCode').value.trim();
+    const unitName     = document.getElementById('ouUnitName').value.trim();
+    const unitTypeVal  = document.getElementById('ouUnitType').value;
+    const profitCenter = document.getElementById('ouProfitCenter').value.trim();
+    const costCenter   = document.getElementById('ouCostCenter').value.trim();
+
+    // Capture edit state before closing
+    const isCreate = ouEditingId === null;
+
+    // ── Validation ──
+    if (!unitCode || !unitName || !unitTypeVal) {
+      showModalAlert('Please fill in all required fields.');
+      return;
+    }
+    if (!/^\d{10}$/.test(profitCenter)) {
+      showModalAlert('Profit Center code must be exactly 10 digits.');
+      return;
+    }
+    if (!/^\d{8}$/.test(costCenter)) {
+      showModalAlert('Cost Center code must be exactly 8 digits.');
+      return;
+    }
+
+    const unitTypeId = parseInt(unitTypeVal, 10);
+    const isActive   = isCreate ? true : ouStatusActive;
+
+    // ── Build payload ──
+    const payload = {
+      unitCode:        unitCode,
+      unitName:        unitName,
+      unitTypeId:      unitTypeId,
+      isActive:        isActive,
+      unitCenterDetail: [
+        { centerTypeId: 1, centerCode: profitCenter },
+        { centerTypeId: 2, centerCode: costCenter   }
+      ]
+    };
+
+    console.log('=== ORGANIZATION UNIT API PAYLOAD ===');
+    console.log(JSON.stringify(payload, null, 2));
+
+    // ── Save to in-memory data ──
+    if (isCreate) {
+      ouData.push({
+        id:           ouNextId++,
+        unitCode:     unitCode,
+        unitName:     unitName,
+        unitTypeId:   unitTypeId,
+        profitCenter: profitCenter,
+        costCenter:   costCenter,
+        isActive:     true
+      });
+    } else {
+      const idx = ouData.findIndex(r => r.id === ouEditingId);
+      if (idx !== -1) {
+        ouData[idx].unitCode     = unitCode;
+        ouData[idx].unitName     = unitName;
+        ouData[idx].unitTypeId   = unitTypeId;
+        ouData[idx].profitCenter = profitCenter;
+        ouData[idx].costCenter   = costCenter;
+        ouData[idx].isActive     = isActive;
+      }
+    }
+
+    // ── Close modal, re-render, show success ──
+    closeOuModal();
+    renderOuTable();
+
+    if (isCreate) {
+      showPageSuccess(`Unit "${unitName}" created successfully!`);
+    } else {
+      showPageSuccess(`Unit "${unitName}" updated successfully!`);
+    }
+  }
+
+  // ─── Initial render ──────────────────────────────────────────────────────────
+  renderOuTable();
+</script>
+
+</body>
+</html>

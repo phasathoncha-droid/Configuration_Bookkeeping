@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMS - Account Contract Configuration</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --primary:        #378ADD;
+      --primary-dark:   #0C447C;
+      --primary-darker: #003D99;
+      --primary-light:  #E8F2FF;
+      --success:        #639922;
+      --success-light:  #F0F7E6;
+      --danger:         #E24B4A;
+      --danger-light:   #FEF2F2;
+      --warning:        #D97706;
+      --warning-light:  #FFFBEB;
+      --bg-primary:     #FFFFFF;
+      --bg-secondary:   #F8F9FB;
+      --border:         #E0E3E8;
+      --text-primary:   #1A1D23;
+      --text-secondary: #6B7280;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    /* ── App Header ── */
+    .app-header {
+      background: linear-gradient(135deg, var(--primary-darker) 0%, var(--primary-dark) 100%);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .app-header .brand { display: flex; align-items: center; gap: 10px; }
+    .app-header .brand-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+    .app-header .brand-text { color: #fff; font-size: 15px; font-weight: 600; }
+    .app-header .header-right { display: flex; align-items: center; gap: 12px; }
+    .app-header .user-info { color: rgba(255,255,255,0.8); font-size: 13px; }
+    .btn-logout {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.2); }
+
+    /* ── Page Container ── */
+    .page-container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+    /* ── Page Header ── */
+    .page-header { margin-bottom: 1.25rem; }
+    .page-title { font-size: 22px; font-weight: 600; color: var(--text-primary); }
+
+    /* ── Toast ── */
+    #toastContainer {
+      position: fixed;
+      top: 72px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+      max-width: 380px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+      pointer-events: all;
+      animation: toastIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .toast.hiding {
+      animation: toastOut 0.2s ease forwards;
+    }
+    @keyframes toastIn {
+      from { opacity:0; transform: translateX(40px); }
+      to   { opacity:1; transform: translateX(0); }
+    }
+    @keyframes toastOut {
+      from { opacity:1; transform: translateX(0); }
+      to   { opacity:0; transform: translateX(40px); }
+    }
+    .toast-success {
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #6EE7B7;
+    }
+    .toast-icon {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: #059669;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .toast-icon svg { display: block; }
+    .toast-body { flex: 1; line-height: 1.45; }
+    .toast-close {
+      background: none; border: none; cursor: pointer;
+      font-size: 16px; color: #065F46; opacity: 0.6;
+      line-height: 1; padding: 0; flex-shrink: 0;
+    }
+    .toast-close:hover { opacity: 1; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0.625rem 1.25rem;
+      border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: #ECEEF2; }
+    .btn-sm { padding: 0.375rem 0.75rem; font-size: 12px; font-weight: 500; }
+    .btn-edit {
+      background: var(--bg-secondary);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+    .btn-edit:hover { background: var(--primary-light); border-color: var(--primary); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* ── Table Toolbar ── */
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .toolbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .search-type-select {
+      padding: 0.55rem 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: 8px 0 0 8px;
+      border-right: none;
+      font-size: 13px;
+      font-family: inherit;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      outline: none;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: border-color 0.15s;
+    }
+    .search-type-select:focus { border-color: var(--primary); }
+    .table-search-input {
+      flex: 1;
+      min-width: 0;
+      padding: 0.55rem 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .table-search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.15);
+      z-index: 1;
+      position: relative;
+    }
+    .search-bar-group {
+      display: flex;
+      align-items: stretch;
+      flex: 1;
+      max-width: 600px;
+    }
+    .btn-search {
+      background: var(--primary);
+      color: #fff;
+      border: 1px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+      padding: 0.55rem 1.1rem;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: 6px;
+      transition: background 0.15s;
+    }
+    .btn-search:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+
+    /* ── Table ── */
+    .table-wrapper { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 280px); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { position: sticky; top: 0; z-index: 1; background: var(--bg-secondary); }
+    thead tr { background: var(--bg-secondary); border-bottom: 2px solid var(--border); }
+    thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #FAFBFD; }
+    tbody td { padding: 13px 16px; font-size: 13px; vertical-align: middle; color: var(--text-primary); }
+    tbody tr.row-inactive { opacity: 0.7; }
+    .mono { font-family: 'Courier New', monospace; font-size: 12px; font-weight: 600; color: var(--text-primary); }
+
+    /* ── Status Badge ── */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px; font-weight: 600;
+    }
+    .status-badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+    }
+    .status-active   { background: #ECFDF5; color: #065F46; }
+    .status-active::before { background: #10B981; }
+    .status-inactive { background: #F3F4F6; color: #6B7280; }
+    .status-inactive::before { background: #9CA3AF; }
+
+    /* ── Empty / Search Prompt State ── */
+    .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
+    .empty-state p { font-size: 14px; }
+    .empty-state .search-prompt-icon {
+      width: 48px; height: 48px; margin: 0 auto 1rem;
+      background: var(--primary-light);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Modal Backdrop ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    /* ── Modal ── */
+    .modal {
+      background: var(--bg-primary);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 860px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      animation: modalIn 0.2s ease;
+      margin: auto;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--primary-darker), var(--primary-dark));
+      border-radius: 14px 14px 0 0;
+    }
+    .modal-title { font-size: 18px; font-weight: 700; color: #fff; }
+    .modal-subtitle { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+    .modal-close {
+      background: rgba(255,255,255,0.12);
+      border: none; color: #fff;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.22); }
+    .modal-body { padding: 1.5rem; }
+    .modal-footer {
+      display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg-secondary);
+      border-radius: 0 0 14px 14px;
+    }
+
+    /* ── Modal Alert (validation) ── */
+    .alert {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 1rem;
+    }
+    .alert-danger { background: var(--danger-light); border: 1px solid #FCA5A5; color: #991B1B; }
+    .alert-danger .alert-close {
+      margin-left: auto; cursor: pointer; font-size: 16px;
+      background: none; border: none; color: inherit; line-height: 1;
+    }
+
+    /* ── Layer Card ── */
+    .layer-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      background: var(--bg-primary);
+      margin-bottom: 1rem;
+    }
+    .layer-card:last-child { margin-bottom: 0; }
+    .layer-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 8px; margin-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .layer-card-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--text-secondary);
+    }
+
+    /* ── Form ── */
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .form-label .req { color: var(--danger); margin-left: 2px; }
+
+    /* ── Toggle Switch ── */
+    .toggle-wrap {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+    }
+    .toggle-track {
+      position: relative;
+      width: 44px; height: 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-track.on  { background: var(--primary); }
+    .toggle-track.off { background: #9CA3AF; }
+    .toggle-thumb {
+      position: absolute;
+      top: 3px;
+      width: 18px; height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      transition: left 0.2s;
+    }
+    .toggle-track.on  .toggle-thumb { left: 23px; }
+    .toggle-track.off .toggle-thumb { left: 3px; }
+    .toggle-label { color: var(--text-secondary); font-weight: 500; }
+    .toggle-label.on  { color: var(--primary-dark); }
+
+    /* ── Unit Smart Search ── */
+    .unit-search-wrap { position: relative; }
+    .unit-search-input-row {
+      display: flex; align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-primary);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      overflow: visible;
+    }
+    .unit-search-input-row:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.15);
+    }
+    .unit-search-icon {
+      padding: 0 10px 0 11px;
+      display: flex; align-items: center;
+      pointer-events: none; flex-shrink: 0;
+    }
+    .unit-search-text {
+      flex: 1;
+      border: none; outline: none;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: transparent;
+      padding: 0.625rem 0.625rem 0.625rem 0;
+    }
+    .unit-search-text::placeholder { color: var(--text-secondary); }
+
+    /* Selected chip */
+    .unit-chip {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary);
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px; font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      margin: 5px;
+    }
+    .unit-chip-clear {
+      background: none; border: none;
+      color: var(--primary); cursor: pointer;
+      font-size: 14px; line-height: 1;
+      padding: 0; display: flex; align-items: center;
+    }
+    .unit-chip-clear:hover { color: var(--danger); }
+
+    /* Dropdown */
+    .unit-search-dropdown {
+      position: absolute;
+      top: calc(100% + 4px); left: 0; right: 0;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      max-height: 220px; overflow-y: auto;
+      z-index: 300;
+      display: none;
+    }
+    .unit-search-dropdown.open { display: block; }
+    .unit-dropdown-option {
+      padding: 9px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+    .unit-dropdown-option:last-child { border-bottom: none; }
+    .unit-dropdown-option:hover { background: var(--primary-light); }
+    .unit-dropdown-option .opt-code {
+      font-family: 'Courier New', monospace;
+      font-weight: 600; font-size: 12px;
+    }
+    .unit-dropdown-option .opt-name { color: var(--text-secondary); margin-left: 4px; font-size: 12px; }
+    .unit-dropdown-empty {
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* ── History Table (inside modal) ── */
+    .history-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .history-table { width: 100%; border-collapse: collapse; }
+    .history-table thead th {
+      position: sticky; top: 0; z-index: 1;
+      background: var(--bg-secondary);
+      padding: 9px 12px;
+      text-align: left;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    .history-table tbody tr { border-bottom: 1px solid var(--border); }
+    .history-table tbody tr:last-child { border-bottom: none; }
+    .history-table tbody td {
+      padding: 9px 12px;
+      font-size: 13px;
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    /* Current badge in history */
+    .current-badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary);
+      border-radius: 100px;
+      font-size: 10px; font-weight: 700;
+      color: var(--primary-dark);
+      margin-left: 6px;
+      vertical-align: middle;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ══ App Header ══ -->
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-icon">
+      <img src="data:image/png;base64,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" alt="AMS Logo" style="width:32px;height:32px;object-fit:contain;" />
+    </div>
+    <span class="brand-text">Accounting Management System</span>
+  </div>
+  <div class="header-right">
+    <span class="user-info">phasathon.cha@turbo.co.th</span>
+    <button class="btn-logout">Log Out</button>
+  </div>
+</header>
+
+<!-- ══ Page Content ══ -->
+<div class="page-container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title">Account Contract Configuration</div>
+  </div>
+
+  <!-- Page Alert Area -->
+  <div id="toastContainer"></div>
+
+  <!-- Main Card -->
+  <div class="card">
+    <!-- Toolbar -->
+    <div class="table-toolbar">
+      <div class="search-bar-group">
+        <select id="acSearchType" class="search-type-select">
+          <option value="contract">Contract Number</option>
+          <option value="unit">Unit Code</option>
+        </select>
+        <input type="text" id="acSearchInput" class="table-search-input"
+          placeholder="Enter contract number..." autocomplete="off"
+          onkeydown="if(event.key==='Enter') doSearch()" />
+        <button class="btn-search" onclick="doSearch()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <circle cx="5.5" cy="5.5" r="4" stroke="#fff" stroke-width="1.5"/>
+            <line x1="8.7" y1="8.7" x2="11.5" y2="11.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Search
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <table id="acTable">
+        <thead>
+          <tr>
+            <th>Contract Number</th>
+            <th>Current Unit Code</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="acTableBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page-container -->
+
+<!-- ══ Modal Backdrop ══ -->
+<div class="modal-backdrop" id="acModalBackdrop" onclick="handleAcBackdropClick(event)">
+  <div class="modal" id="acModal">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Contract Details</div>
+        <div class="modal-subtitle" id="acModalSubtitle">Contract #—</div>
+      </div>
+      <button class="modal-close" onclick="closeAcModal()">✕</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+
+      <!-- Validation Alert -->
+      <div id="acModalAlertArea"></div>
+
+      <!-- Layer Card 1: Current Assignment -->
+      <div class="layer-card">
+        <div class="layer-card-header">
+          <span class="layer-card-title">Current Assignment</span>
+          <div class="toggle-wrap">
+            <span class="toggle-label" id="acToggleLabel">Active</span>
+            <div class="toggle-track on" id="acToggleTrack" onclick="toggleAcStatus()">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit Code Smart Search -->
+        <div class="form-group">
+          <label class="form-label">Unit Code <span class="req">*</span></label>
+          <div class="unit-search-wrap" id="acUnitSearchWrap">
+            <!-- Input row (shown when nothing selected) -->
+            <div class="unit-search-input-row" id="acUnitInputRow">
+              <span class="unit-search-icon">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                  <circle cx="5.5" cy="5.5" r="4" stroke="#378ADD" stroke-width="1.5"/>
+                  <line x1="8.7" y1="8.7" x2="11.5" y2="11.5" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <input type="text" id="acUnitSearchText" class="unit-search-text"
+                placeholder="Type to search branch unit code or name..."
+                autocomplete="off"
+                oninput="onAcUnitInput()" />
+            </div>
+            <!-- Dropdown -->
+            <div class="unit-search-dropdown" id="acUnitDropdown"></div>
+            <!-- Selected chip (shown when selection made) -->
+            <div id="acUnitChip" style="display:none;"></div>
+          </div>
+        </div>
+      </div><!-- /layer-card 1 -->
+
+      <!-- Layer Card 2: Assignment History -->
+      <div class="layer-card">
+        <div class="layer-card-header">
+          <span class="layer-card-title">Assignment History</span>
+        </div>
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Unit Code</th>
+                <th>Unit Name</th>
+                <th>Effective Date</th>
+                <th>Created By</th>
+              </tr>
+            </thead>
+            <tbody id="acHistoryTableBody">
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /layer-card 2 -->
+
+    </div><!-- /modal-body -->
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeAcModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAcContract()">Save</button>
+    </div>
+
+  </div><!-- /modal -->
+</div><!-- /modal-backdrop -->
+
+
+<script>
+  // ─── Branch Units ────────────────────────────────────────────────────────────
+  const BRANCH_UNITS = [
+    { unitCode: 'NBI001', unitName: 'สำนักงานใหญ่'  },
+    { unitCode: 'NBI002', unitName: 'สาขาลาดพร้าว'  },
+    { unitCode: 'NBI003', unitName: 'สาขาสีลม'      },
+    { unitCode: 'NBI004', unitName: 'สาขาเชียงใหม่' },
+  ];
+
+  // ─── Contract Data ───────────────────────────────────────────────────────────
+  let acData = [
+    { id:1,  contractNumber:'100000100', unitCode:'NBI001', isActive:true  },
+    { id:2,  contractNumber:'100000101', unitCode:'NBI002', isActive:true  },
+    { id:3,  contractNumber:'100000102', unitCode:'NBI003', isActive:true  },
+    { id:4,  contractNumber:'100000103', unitCode:'NBI004', isActive:true  },
+    { id:5,  contractNumber:'100000104', unitCode:'NBI001', isActive:true  },
+    { id:6,  contractNumber:'100000105', unitCode:'NBI002', isActive:true  },
+    { id:7,  contractNumber:'100000106', unitCode:'NBI003', isActive:false },
+    { id:8,  contractNumber:'100000107', unitCode:'NBI004', isActive:false },
+    { id:9,  contractNumber:'100000108', unitCode:'NBI001', isActive:true  },
+    { id:10, contractNumber:'100000109', unitCode:'NBI002', isActive:true  },
+  ];
+
+  // ─── History Data ────────────────────────────────────────────────────────────
+  let acHistory = [
+    { contractNumber:'100000100', unitCode:'NBI001', unitName:'สำนักงานใหญ่',  effectiveDate:'2024-01-15', createdBy:'admin' },
+    { contractNumber:'100000101', unitCode:'NBI001', unitName:'สำนักงานใหญ่',  effectiveDate:'2024-02-01', createdBy:'admin' },
+    { contractNumber:'100000101', unitCode:'NBI002', unitName:'สาขาลาดพร้าว',  effectiveDate:'2024-06-10', createdBy:'warongporn' },
+    { contractNumber:'100000102', unitCode:'NBI002', unitName:'สาขาลาดพร้าว',  effectiveDate:'2024-03-01', createdBy:'admin' },
+    { contractNumber:'100000102', unitCode:'NBI003', unitName:'สาขาสีลม',       effectiveDate:'2025-01-20', createdBy:'phasathon.cha' },
+    { contractNumber:'100000103', unitCode:'NBI004', unitName:'สาขาเชียงใหม่', effectiveDate:'2024-04-05', createdBy:'admin' },
+    { contractNumber:'100000104', unitCode:'NBI002', unitName:'สาขาลาดพร้าว',  effectiveDate:'2024-01-01', createdBy:'admin' },
+    { contractNumber:'100000104', unitCode:'NBI001', unitName:'สำนักงานใหญ่',  effectiveDate:'2024-09-15', createdBy:'warongporn' },
+    { contractNumber:'100000105', unitCode:'NBI002', unitName:'สาขาลาดพร้าว',  effectiveDate:'2024-05-20', createdBy:'admin' },
+    { contractNumber:'100000106', unitCode:'NBI003', unitName:'สาขาสีลม',       effectiveDate:'2024-07-11', createdBy:'admin' },
+    { contractNumber:'100000106', unitCode:'NBI003', unitName:'สาขาสีลม',       effectiveDate:'2025-02-28', createdBy:'phasathon.cha' },
+    { contractNumber:'100000107', unitCode:'NBI004', unitName:'สาขาเชียงใหม่', effectiveDate:'2024-08-01', createdBy:'admin' },
+    { contractNumber:'100000108', unitCode:'NBI001', unitName:'สำนักงานใหญ่',  effectiveDate:'2024-10-10', createdBy:'admin' },
+    { contractNumber:'100000109', unitCode:'NBI002', unitName:'สาขาลาดพร้าว',  effectiveDate:'2024-11-05', createdBy:'admin' },
+  ];
+
+  // ─── State ───────────────────────────────────────────────────────────────────
+  let acEditingId        = null;
+  let acStatusActive     = true;
+  let acSelectedUnitCode = '';
+  let acSelectedUnitName = '';
+
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
+  function formatDate(isoStr) {
+    return new Date(isoStr).toLocaleDateString('en-GB', {
+      day: '2-digit', month: 'short', year: 'numeric'
+    });
+  }
+
+  function unitNameByCode(code) {
+    const u = BRANCH_UNITS.find(b => b.unitCode === code);
+    return u ? u.unitName : code;
+  }
+
+  // ─── Search Type — update placeholder ───────────────────────────────────────
+  document.getElementById('acSearchType').addEventListener('change', function () {
+    const input = document.getElementById('acSearchInput');
+    input.placeholder = this.value === 'contract' ? 'Enter contract number...' : 'Enter unit code...';
+    input.value = '';
+    showSearchPrompt();
+  });
+
+  // ─── Show search prompt (initial / cleared state) ────────────────────────────
+  function showSearchPrompt() {
+    document.getElementById('acTableBody').innerHTML = `
+      <tr>
+        <td colspan="4">
+          <div class="empty-state">
+            <div class="search-prompt-icon">
+              <svg width="22" height="22" viewBox="0 0 13 13" fill="none">
+                <circle cx="5.5" cy="5.5" r="4" stroke="#378ADD" stroke-width="1.5"/>
+                <line x1="8.7" y1="8.7" x2="11.5" y2="11.5" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p>Select a search type and enter a value, then click Search.</p>
+          </div>
+        </td>
+      </tr>`;
+  }
+
+  // ─── Do Search (button click or Enter) ──────────────────────────────────────
+  function doSearch() {
+    const searchType = document.getElementById('acSearchType').value;
+    const searchVal  = document.getElementById('acSearchInput').value.trim().toLowerCase();
+    const tbody      = document.getElementById('acTableBody');
+
+    if (!searchVal) {
+      showSearchPrompt();
+      return;
+    }
+
+    // Always show active-only
+    const filtered = acData.filter(row => {
+      if (!row.isActive) return false;
+      if (searchType === 'contract') return row.contractNumber.toLowerCase().includes(searchVal);
+      return row.unitCode.toLowerCase().includes(searchVal);
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4">
+            <div class="empty-state"><p>No active records found.</p></div>
+          </td>
+        </tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(row => `
+      <tr data-id="${row.id}">
+        <td><span class="mono">${row.contractNumber}</span></td>
+        <td><span class="mono">${row.unitCode}</span></td>
+        <td><span class="status-badge status-active">Active</span></td>
+        <td><button class="btn btn-sm btn-edit" onclick="openAcModal(${row.id})">View</button></td>
+      </tr>`).join('');
+  }
+
+  // ─── Re-render table after save (preserve last search) ──────────────────────
+  function renderAcTable() {
+    doSearch();
+  }
+
+  // ─── Open Modal ──────────────────────────────────────────────────────────────
+  function openAcModal(id) {
+    const row = acData.find(r => r.id === id);
+    if (!row) return;
+
+    acEditingId    = id;
+    acStatusActive = row.isActive;
+
+    // Modal subtitle
+    document.getElementById('acModalSubtitle').textContent = 'Contract #' + row.contractNumber;
+
+    // Clear alert
+    document.getElementById('acModalAlertArea').innerHTML = '';
+
+    // Pre-select current unit code
+    const unit = BRANCH_UNITS.find(b => b.unitCode === row.unitCode);
+    if (unit) {
+      acSelectedUnitCode = unit.unitCode;
+      acSelectedUnitName = unit.unitName;
+    } else {
+      acSelectedUnitCode = row.unitCode;
+      acSelectedUnitName = unitNameByCode(row.unitCode);
+    }
+    renderUnitSearch();
+
+    // Sync toggle
+    syncAcToggle();
+
+    // Render history
+    renderHistory(row.contractNumber);
+
+    // Open modal
+    document.getElementById('acModalBackdrop').classList.add('open');
+  }
+
+  // ─── Close Modal ─────────────────────────────────────────────────────────────
+  function closeAcModal() {
+    document.getElementById('acModalBackdrop').classList.remove('open');
+    closeUnitDropdown();
+  }
+
+  function handleAcBackdropClick(e) {
+    if (e.target === document.getElementById('acModalBackdrop')) {
+      closeAcModal();
+    }
+  }
+
+  // ─── Toggle Status ────────────────────────────────────────────────────────────
+  function toggleAcStatus() {
+    acStatusActive = !acStatusActive;
+    syncAcToggle();
+  }
+
+  function syncAcToggle() {
+    const track = document.getElementById('acToggleTrack');
+    const label = document.getElementById('acToggleLabel');
+    if (acStatusActive) {
+      track.className = 'toggle-track on';
+      label.textContent = 'Active';
+      label.className = 'toggle-label on';
+    } else {
+      track.className = 'toggle-track off';
+      label.textContent = 'Inactive';
+      label.className = 'toggle-label';
+    }
+  }
+
+  // ─── Unit Smart Search ───────────────────────────────────────────────────────
+  function renderUnitSearch() {
+    const inputRow = document.getElementById('acUnitInputRow');
+    const chipEl   = document.getElementById('acUnitChip');
+    const dropdown = document.getElementById('acUnitDropdown');
+
+    if (acSelectedUnitCode) {
+      // Show chip, hide input
+      inputRow.style.display = 'none';
+      dropdown.classList.remove('open');
+      chipEl.style.display = 'block';
+      chipEl.innerHTML = `
+        <div class="unit-chip">
+          <span>${acSelectedUnitCode} — ${acSelectedUnitName}</span>
+          <button class="unit-chip-clear" onclick="clearUnitSearch()" title="Clear selection">✕</button>
+        </div>`;
+    } else {
+      // Show input, hide chip
+      inputRow.style.display = 'flex';
+      chipEl.style.display = 'none';
+      document.getElementById('acUnitSearchText').value = '';
+    }
+  }
+
+  function clearUnitSearch() {
+    acSelectedUnitCode = '';
+    acSelectedUnitName = '';
+    renderUnitSearch();
+    document.getElementById('acUnitSearchText').focus();
+  }
+
+  function onAcUnitInput() {
+    const q = document.getElementById('acUnitSearchText').value.trim().toLowerCase();
+    const dropdown = document.getElementById('acUnitDropdown');
+
+    const matches = BRANCH_UNITS.filter(b =>
+      b.unitCode.toLowerCase().includes(q) || b.unitName.toLowerCase().includes(q)
+    );
+
+    if (matches.length === 0) {
+      dropdown.innerHTML = `<div class="unit-dropdown-empty">No matching units found.</div>`;
+    } else {
+      dropdown.innerHTML = matches.map(b => `
+        <div class="unit-dropdown-option" onclick="selectUnit('${b.unitCode}', '${b.unitName}')">
+          <span class="opt-code">${b.unitCode}</span>
+          <span class="opt-name">— ${b.unitName}</span>
+        </div>`).join('');
+    }
+
+    dropdown.classList.add('open');
+  }
+
+  function selectUnit(code, name) {
+    acSelectedUnitCode = code;
+    acSelectedUnitName = name;
+    renderUnitSearch();
+    closeUnitDropdown();
+  }
+
+  function closeUnitDropdown() {
+    document.getElementById('acUnitDropdown').classList.remove('open');
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('mousedown', function (e) {
+    const wrap = document.getElementById('acUnitSearchWrap');
+    if (wrap && !wrap.contains(e.target)) {
+      closeUnitDropdown();
+    }
+  });
+
+  // ─── Render History Table ─────────────────────────────────────────────────────
+  function renderHistory(contractNumber) {
+    const rows = acHistory
+      .filter(h => h.contractNumber === contractNumber)
+      .slice() // copy before sort
+      .sort((a, b) => new Date(a.effectiveDate) - new Date(b.effectiveDate));
+
+    const tbody = document.getElementById('acHistoryTableBody');
+
+    if (rows.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align:center;padding:20px;color:var(--text-secondary);font-size:13px;">
+            No history available.
+          </td>
+        </tr>`;
+      return;
+    }
+
+    tbody.innerHTML = rows.map((h, idx) => {
+      const isLast = idx === rows.length - 1;
+      const badge  = isLast ? '<span class="current-badge">Current</span>' : '';
+      return `
+        <tr>
+          <td><span class="mono">${h.unitCode}</span></td>
+          <td>${h.unitName}${badge}</td>
+          <td>${formatDate(h.effectiveDate)}</td>
+          <td>${h.createdBy}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  // ─── Show Modal Alert ────────────────────────────────────────────────────────
+  function showAcModalAlert(msg) {
+    document.getElementById('acModalAlertArea').innerHTML = `
+      <div class="alert alert-danger">
+        <span>${msg}</span>
+        <button class="alert-close" onclick="this.closest('.alert').remove()">✕</button>
+      </div>`;
+  }
+
+  // ─── Show Toast ───────────────────────────────────────────────────────────────
+  function showPageSuccess(msg) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-success';
+    toast.innerHTML = `
+      <div class="toast-icon">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2.5 7L5.5 10L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="toast-body">${msg}</div>
+      <button class="toast-close" onclick="dismissToast(this.parentElement)">✕</button>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => dismissToast(toast), 4000);
+  }
+
+  function dismissToast(toast) {
+    if (!toast || !toast.parentElement) return;
+    toast.classList.add('hiding');
+    setTimeout(() => { if (toast.parentElement) toast.parentElement.removeChild(toast); }, 200);
+  }
+
+  // ─── Save Contract ────────────────────────────────────────────────────────────
+  function saveAcContract() {
+    // Capture values before closing
+    const selectedUnitCode = acSelectedUnitCode;
+    const selectedUnitName = acSelectedUnitName;
+    const isActive         = acStatusActive;
+
+    // ── Validation ──
+    if (!selectedUnitCode) {
+      showAcModalAlert('Please select a Unit Code.');
+      return;
+    }
+
+    const row = acData.find(r => r.id === acEditingId);
+    if (!row) return;
+
+    const contractNumber = row.contractNumber;
+    const today          = new Date().toISOString().split('T')[0];
+
+    // ── Append to history ──
+    acHistory.push({
+      contractNumber: contractNumber,
+      unitCode:       selectedUnitCode,
+      unitName:       selectedUnitName,
+      effectiveDate:  today,
+      createdBy:      'phasathon.cha'
+    });
+
+    // ── Update acData row ──
+    row.unitCode  = selectedUnitCode;
+    row.isActive  = isActive;
+
+    // ── Log payload ──
+    const payload = {
+      contractNumber: contractNumber,
+      unitCode:       selectedUnitCode,
+      isActive:       isActive,
+      effectiveDate:  today
+    };
+    console.log('=== ACCOUNT CONTRACT API PAYLOAD ===');
+    console.log(JSON.stringify(payload, null, 2));
+
+    // ── Close modal, re-render, show success ──
+    closeAcModal();
+    renderAcTable();
+    showPageSuccess(`Contract "${contractNumber}" updated successfully!`);
+  }
+
+  // ─── Initial Render ──────────────────────────────────────────────────────────
+  showSearchPrompt();
+</script>
+
+</body>
+</html>

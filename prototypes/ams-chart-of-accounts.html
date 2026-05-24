@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMS - Chart of Account Configuration</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap');
+    :root {
+      --primary: #378ADD;
+      --primary-dark: #0C447C;
+      --primary-darker: #003D99;
+      --primary-light: #E8F2FF;
+      --success: #639922;
+      --success-light: #F0F7E6;
+      --danger: #E24B4A;
+      --danger-light: #FEF2F2;
+      --warning: #D97706;
+      --warning-light: #FFFBEB;
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F8F9FB;
+      --border: #E0E3E8;
+      --text-primary: #1A1D23;
+      --text-secondary: #6B7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    /* ── Header ── */
+    .app-header {
+      background: linear-gradient(135deg, var(--primary-darker) 0%, var(--primary-dark) 100%);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .app-header .brand { display: flex; align-items: center; gap: 10px; }
+    .app-header .brand-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+    .app-header .brand-text { color: #fff; font-size: 15px; font-weight: 600; }
+    .app-header .header-right { display: flex; align-items: center; gap: 12px; }
+    .app-header .user-info { color: rgba(255,255,255,0.8); font-size: 13px; }
+    .btn-logout {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.15s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.2); }
+
+    /* ── Page Container ── */
+    .page-container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+    /* ── Page Header ── */
+    .page-header { margin-bottom: 1.25rem; }
+    .page-title { font-size: 22px; font-weight: 600; color: var(--text-primary); }
+    .page-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
+
+    /* ── Tabs ── */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .tab-btn {
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      font-family: inherit;
+    }
+    .tab-btn:hover { color: var(--primary); }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Coming Soon ── */
+    .coming-soon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 2rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    .coming-soon-icon { font-size: 48px; margin-bottom: 1rem; opacity: 0.4; }
+    .coming-soon h3 { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .coming-soon p { font-size: 13px; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0.625rem 1.25rem;
+      border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: #ECEEF2; }
+    .btn-sm { padding: 0.375rem 0.75rem; font-size: 12px; font-weight: 500; }
+    .btn-edit {
+      background: var(--bg-secondary);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+    .btn-edit:hover { background: var(--primary-light); border-color: var(--primary); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: visible;
+    }
+
+    /* ── Table Toolbar ── */
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .toolbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .table-search-wrap { position: relative; flex: 1; max-width: 420px; }
+    .table-search-icon {
+      position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+      pointer-events: none;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .table-search-icon svg { display: block; }
+    .table-search-input {
+      width: 100%;
+      padding: 0.55rem 2.5rem 0.55rem 2.6rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .table-search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.15);
+    }
+    .table-search-clear {
+      position: absolute; right: 9px; top: 50%; transform: translateY(-50%);
+      background: none; border: none;
+      color: var(--text-secondary); font-size: 15px;
+      cursor: pointer; line-height: 1; padding: 2px 4px; display: none;
+    }
+    .table-search-clear:hover { color: var(--danger); }
+    .table-search-clear.visible { display: block; }
+    .status-filter-select {
+      width: 140px;
+      padding: 0.55rem 0.875rem;
+    }
+
+    /* ── Table ── */
+    .table-wrapper { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 280px); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { position: sticky; top: 0; z-index: 1; background: var(--bg-secondary); }
+    thead tr { background: var(--bg-secondary); border-bottom: 2px solid var(--border); }
+    thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #FAFBFD; }
+    tbody td { padding: 13px 16px; font-size: 13px; vertical-align: middle; }
+    .mono { font-family: inherit; font-size: 12px; font-weight: 600; }
+
+    /* ── FS Type Badge ── */
+    .fs-type-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 100px;
+      font-size: 11px; font-weight: 600;
+    }
+    .fs-type-asset    { background: #EFF6FF; color: #1D4ED8; }
+    .fs-type-liabilities { background: #FEF2F2; color: #B91C1C; }
+    .fs-type-equity   { background: #F0FDF4; color: #166534; }
+    .fs-type-pl       { background: #FFFBEB; color: #92400E; }
+
+    /* ── Status Badge ── */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px; font-weight: 600;
+    }
+    .status-badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+    }
+    .status-active   { background: #ECFDF5; color: #065F46; }
+    .status-active::before { background: #10B981; }
+    .status-inactive { background: #FEF2F2; color: #B91C1C; }
+    .status-inactive::before { background: #E24B4A; }
+
+    /* ── Empty State ── */
+    .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
+    .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ── Toast ── */
+    #toastContainer {
+      position: fixed; top: 72px; right: 24px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 12px;
+      min-width: 280px; max-width: 380px;
+      padding: 14px 16px; border-radius: 10px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+      pointer-events: all;
+      animation: toastIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .toast.hiding { animation: toastOut 0.2s ease forwards; }
+    @keyframes toastIn {
+      from { opacity:0; transform: translateX(40px); }
+      to   { opacity:1; transform: translateX(0); }
+    }
+    @keyframes toastOut {
+      from { opacity:1; transform: translateX(0); }
+      to   { opacity:0; transform: translateX(40px); }
+    }
+    .toast-success { background: #D1FAE5; color: #065F46; border: 1px solid #6EE7B7; }
+    .toast-icon {
+      width: 28px; height: 28px; border-radius: 50%; background: #059669;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .toast-icon svg { display: block; }
+    .toast-body { flex: 1; line-height: 1.45; }
+    .toast-close {
+      background: none; border: none; cursor: pointer;
+      font-size: 16px; color: #065F46; opacity: 0.6;
+      line-height: 1; padding: 0; flex-shrink: 0;
+    }
+    .toast-close:hover { opacity: 1; }
+
+    /* ── Modal ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--bg-primary);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      animation: modalIn 0.2s ease;
+      margin: auto;
+    }
+    @keyframes modalIn {
+      from { opacity:0; transform: scale(0.96); }
+      to   { opacity:1; transform: scale(1); }
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--primary-darker), var(--primary-dark));
+      border-radius: 14px 14px 0 0;
+    }
+    .modal-title { font-size: 18px; font-weight: 700; color: #fff; }
+    .modal-subtitle { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+    .modal-close {
+      background: rgba(255,255,255,0.12);
+      border: none; color: #fff;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.22); }
+    .modal-body { padding: 1.5rem; }
+    .modal-footer {
+      display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg-secondary);
+      border-radius: 0 0 14px 14px;
+    }
+
+    /* ── Alert (modal validation) ── */
+    .alert {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 1rem;
+    }
+    .alert-danger { background: var(--danger-light); border: 1px solid #FCA5A5; color: #991B1B; }
+    .alert-danger .alert-close {
+      margin-left: auto; cursor: pointer; font-size: 16px;
+      background: none; border: none; color: inherit; line-height: 1;
+    }
+
+    /* ── Layer Card ── */
+    .layer-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      background: var(--bg-primary);
+    }
+    .layer-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 8px; margin-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .layer-card-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      color: var(--text-secondary);
+    }
+
+    /* ── Form ── */
+    .form-row { display: grid; gap: 1rem; }
+    .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .form-label .req { color: var(--danger); margin-left: 2px; }
+    .form-control {
+      padding: 0.625rem 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      font-family: inherit;
+      width: 100%;
+    }
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.15);
+    }
+    .form-control.mono { font-family: inherit; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; }
+
+    /* ── Toggle Switch ── */
+    .toggle-wrap {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+    }
+    .toggle-track {
+      position: relative;
+      width: 44px; height: 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-track.on  { background: var(--primary); }
+    .toggle-track.off { background: #9CA3AF; }
+    .toggle-thumb {
+      position: absolute;
+      top: 3px;
+      width: 18px; height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      transition: left 0.2s;
+    }
+    .toggle-track.on  .toggle-thumb { left: 23px; }
+    .toggle-track.off .toggle-thumb { left: 3px; }
+    .toggle-label { color: var(--text-secondary); font-weight: 500; }
+    .toggle-label.on  { color: var(--primary-dark); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+
+    /* ── GL Smart Search (reused for FS Group search in COA modal) ── */
+    .gl-search-wrap {
+      position: relative;
+      height: 38px; /* same height as .form-control */
+    }
+    .gl-search-input {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      padding: 0 0.875rem 0 2.2rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      box-sizing: border-box;
+    }
+    .gl-search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.15);
+    }
+    .gl-search-icon {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      pointer-events: none; display: flex; align-items: center;
+      z-index: 2;
+    }
+    .gl-search-wrap.has-selection .gl-search-icon { display: none; }
+    .gl-dropdown {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+      max-height: 220px; overflow-y: auto;
+      z-index: 300;
+      display: none;
+    }
+    .gl-dropdown.open { display: block; }
+    .gl-option {
+      padding: 9px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex; align-items: center; gap: 8px;
+      transition: background 0.1s;
+    }
+    .gl-option:hover { background: var(--primary-light); }
+    .gl-option-code { font-family: inherit; font-weight: 600; font-size: 12px; flex-shrink: 0; }
+    .gl-option-name { color: var(--text-secondary); font-size: 12px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .gl-selected {
+      display: none;
+      position: absolute; inset: 0;
+      align-items: center; gap: 6px;
+      padding: 0 0.625rem 0 0.875rem;
+      background: var(--primary-light);
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      font-family: inherit; font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .gl-selected.visible { display: flex; }
+    .gl-selected-text { flex: 1; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+    .gl-clear {
+      background: none; border: none; color: var(--text-secondary);
+      cursor: pointer; font-size: 15px; line-height: 1; padding: 0; flex-shrink: 0;
+    }
+    .gl-clear:hover { color: var(--danger); }
+
+    /* ── Checkbox / Radio group ── */
+    .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+    .checkbox-item {
+      display: flex; align-items: center; gap: 8px;
+      cursor: pointer; font-size: 13px;
+      user-select: none;
+    }
+    .checkbox-item input[type="checkbox"],
+    .checkbox-item input[type="radio"] {
+      width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .page-container { padding: 1rem; }
+      .form-row.cols-2 { grid-template-columns: 1fr; }
+      .table-search-wrap { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- App Header -->
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-icon">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAUKADAAQAAAABAAAAUAAAAAAx4ExPAAAFXElEQVR4Ae1b7XHjNhCVbvI/ugpCVRC5AkMVWK7AvAqiq8ByBbYrEFOBfRWIqcBKBWIHUQfOe/BCA/MoEsTmT0a7Myt87L4H4mFJacb0dNKy9/d3h6kb+ApewM0mkz1EoD9Mp9MmFmQaBhBuhv49fB3mrO1U4Akifg+RWMA3TC5CwNpeBViNSwh5/MI0VN8jGhOPYqQZteLdOplCvALtgQOz0QosWYFeydFQA1CBFQW0Wze/GG54C7/n4w3pv0RMhnwFTMB87TzSBDQBlQoo4VaBJqBSASXcKtAEVCqghFsFmoBKBZRwq0ATUKmAEm4VaAIqFVDCrQJNQKUCSrhVoAmoVEAJtwo0AZUKKOFWgSagUgEl/Bcl/v8Ob7ABOm0GH/03cs0tzDeU5uI12ly7BTDwPIwgqSLccgTuiFyu8xUvB83hS/ErzsG/wRt4mvEP65lWhBWAX2VyEOYinhnG/yRyxesXiZgD8to4hzl6e565g8Y3s3Jsy00D6KQds/H2ep6DPDQEn9oJHWO+incyxIuOnK6pFUGSv+tIeGEsyulI+TxFshxzssgW4NDf5BBF+MDjEnhKWd8/s5BfJGBOb6Ahd9eTvyM3bSDPU+Q8Axs8M2qgZ1ijhPtTRVvDNUbhZuQGyXGAiDm0sPbHqP/z7yjson67y+sI8R/tYHucI2B40IeLv4s2XrcXGDleS/5zD66CyI1s8reevL7Qvi+I2D34+Zjiu+K9liNgLYx30s7QLqQ/eGKSd665lsDTuQTM/ymxsH5P6qfQNUThtdJu4TU7Z8xhvoSz7TeQjrFXsgFQtEA7mc/5MnGC3QhnGO9aa3B4iNbheCvj9vUw1mV8lflkSCCuhFfwN/hoG1uBlay+Ol3FR2eBlfn8OmIYKqSVkjwM3F3VXAtLyEkmlcQ1rnMLX3DMRwGcj4QSfoWpOfwbvIanGchSzZ8+WQE4dIDWEnMdsb4pJ7iNJPF3ICu5q5oLyd1J7tgKFJhvDvjcwldwz0vuYJgr4YO/ScdUYE1ykPL0CvZb5h+4OMka8/RcmwG4AM8RbVzNNeYa2azLJY9wBfol/AV+AC99Cy8wnmCtCs139vtsjIAPQvTHGUKHxbl5Wtft9xFJ+7yXtNcoPYgZYlHoP+kWYCnhB+xjjTaI2LB/zlIF9KcvJO4cGeb9wmgr+BGea/4wpJoDTy1kLpN0Dr4psOEg+mjiQ/qrLzFVQL8oTqYEWdFD6KsT18lN1z15KaFwGM9IrsDJ29ehX8BzbCGgfQJ4FuX8GvV/6qYI2ODiK0He/MTweYIPfidT3LjGrgX8hNYfINo7BaETbIV2SETmBFuETmeLDQ/ZlkAkFUOJEueGvWE8+C2GHMdktBvBx42PSbxr/THXxmspIq4qXijqv6A/k7wymu/splTgA8lgzn8Of9yFC0CqtgpX0XIu6ud0KcoO11bwcQAvMf4KX4pfcYz5W/gReQ7jR3i/IbHPDgjy5Olv8FTzv62QvEgA8JTJ/9iRy6ohB+M7eNtYLYy5dmBgvEV80aUM5snFeJJd+n8qHSHiXoRkhRZwtsl26QImC3UuMeUZeA5r81DABFSWgQloAioVUMKtAk1ApQJKuFWgCahUQAm3CjQBlQoo4VaBJqBSASXcKtAEVCqghFsFmoBKBZRwq0ATUKmAEm4VaAIqFVDCrQJNQKUCSjgrsFFyXDJ8TwF/XLICyr3v+Yd1B5KdkuhS4fMveJGmxu61LwFdooDP0K6ZcueoQr4PwipccGw2qMAe4vFtro83E/g6l0xYJQ5q5+9WvhLnzVdgGLBFNRZoNvDf4VaREAHWwPll+4pCq9Ge7F9zJl5pLlkiTgAAAABJRU5ErkJggg==" alt="AMS Logo" style="width:32px;height:32px;object-fit:contain;" />
+    </div>
+    <div>
+      <div class="brand-text">Accounting Management System</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="user-info">Warongporn Approver</span>
+    <button class="btn-logout">Log out</button>
+  </div>
+</header>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
+<!-- Page -->
+<div class="page-container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title">Chart of Account Configuration</div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('coa')" id="tab-coa">Chart of Account</button>
+    <button class="tab-btn" onclick="switchTab('fsgroup')" id="tab-fsgroup">FS Group</button>
+    <button class="tab-btn" onclick="switchTab('fstype')" id="tab-fstype">FS Type</button>
+  </div>
+
+  <!-- Tab: Chart of Account -->
+  <div class="tab-panel active" id="panel-coa">
+    <div class="card">
+      <!-- Toolbar -->
+      <div class="table-toolbar">
+        <div class="table-search-wrap">
+          <span class="table-search-icon">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <circle cx="5.5" cy="5.5" r="4" stroke="#378ADD" stroke-width="1.5"/>
+              <line x1="8.7" y1="8.7" x2="11.5" y2="11.5" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input
+            class="table-search-input"
+            id="coaSearchInput"
+            type="text"
+            placeholder="Search accounts..."
+            oninput="onCoaSearch(this.value)"
+            autocomplete="off"
+          />
+          <button class="table-search-clear" id="coaSearchClear" onclick="clearCoaSearch()" title="Clear search">✕</button>
+        </div>
+        <div class="toolbar-right">
+          <select class="form-control status-filter-select" id="coaStatusFilter" onchange="setCoaStatusFilter(this.value)">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="all">All Status</option>
+          </select>
+          <button class="btn btn-primary" onclick="openCoaCreateModal()">Create New</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table id="coaTable">
+          <thead>
+            <tr>
+              <th>Account Number</th>
+              <th>Account Name (TH)</th>
+              <th>Account Name (EN)</th>
+              <th>FS Group</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="coaTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: FS Type -->
+  <div class="tab-panel" id="panel-fstype">
+    <div class="card">
+      <!-- Toolbar -->
+      <div class="table-toolbar">
+        <div class="table-search-wrap">
+          <span class="table-search-icon">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <circle cx="5.5" cy="5.5" r="4" stroke="#378ADD" stroke-width="1.5"/>
+              <line x1="8.7" y1="8.7" x2="11.5" y2="11.5" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input
+            class="table-search-input"
+            id="fstSearchInput"
+            type="text"
+            placeholder="Search FS types..."
+            oninput="onFstSearch(this.value)"
+            autocomplete="off"
+          />
+          <button class="table-search-clear" id="fstSearchClear" onclick="clearFstSearch()" title="Clear search">✕</button>
+        </div>
+        <div class="toolbar-right">
+          <select class="form-control status-filter-select" id="fstStatusFilter" onchange="setFstStatusFilter(this.value)">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="all">All Status</option>
+          </select>
+          <button class="btn btn-primary" onclick="openFstCreateModal()">Create New</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table id="fstTable">
+          <thead>
+            <tr>
+              <th>Type Code</th>
+              <th>Type Name (TH)</th>
+              <th>Type Name (EN)</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="fstTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: FS Group -->
+  <div class="tab-panel" id="panel-fsgroup">
+    <div class="card">
+      <!-- Toolbar -->
+      <div class="table-toolbar">
+        <div class="table-search-wrap">
+          <span class="table-search-icon">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <circle cx="5.5" cy="5.5" r="4" stroke="#378ADD" stroke-width="1.5"/>
+              <line x1="8.7" y1="8.7" x2="11.5" y2="11.5" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input
+            class="table-search-input"
+            id="fsSearchInput"
+            type="text"
+            placeholder="Search FS groups..."
+            oninput="onFsSearch(this.value)"
+            autocomplete="off"
+          />
+          <button class="table-search-clear" id="fsSearchClear" onclick="clearFsSearch()" title="Clear search">✕</button>
+        </div>
+        <div class="toolbar-right">
+          <select class="form-control status-filter-select" id="fsStatusFilter" onchange="setFsStatusFilter(this.value)">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="all">All Status</option>
+          </select>
+          <button class="btn btn-primary" onclick="openCreateModal()">Create New</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table id="fsTable">
+          <thead>
+            <tr>
+              <th>FS No.</th>
+              <th>FS Name</th>
+              <th>FS Type</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="fsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FS Type Modal -->
+<div class="modal-backdrop" id="fstModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="fstModalTitle">Create New FS Type</div>
+        <div class="modal-subtitle" id="fstModalSubtitle">Fill in the details below to create a new FS Type</div>
+      </div>
+      <button class="modal-close" onclick="closeFstModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="fstModalAlertArea"></div>
+      <div class="layer-card">
+        <div class="layer-card-header">
+          <span class="layer-card-title">FS Type Details</span>
+          <div class="toggle-wrap" id="fstStatusToggleWrap" style="display:none;">
+            <span style="font-size:13px;font-weight:600;color:var(--text-secondary);">Status</span>
+            <div class="toggle-track on" id="fstStatusToggle" onclick="fstToggleStatus()">
+              <div class="toggle-thumb"></div>
+            </div>
+            <span class="toggle-label on" id="fstStatusToggleLabel">Active</span>
+          </div>
+        </div>
+
+        <div class="form-row cols-2" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">Type Code <span class="req">*</span></label>
+            <input type="text" class="form-control mono" id="fstFieldCode"
+              maxlength="10" placeholder="e.g. A"
+              oninput="this.value=this.value.toUpperCase()"
+              autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">Type Name (TH) <span class="req">*</span></label>
+            <input type="text" class="form-control" id="fstFieldNameTh" placeholder="ชื่อประเภทรายงาน" autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Type Name (EN) <span class="req">*</span></label>
+            <input type="text" class="form-control" id="fstFieldNameEn" placeholder="Financial statement type name" autocomplete="off" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeFstModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFstType()">Save FS Type</button>
+    </div>
+  </div>
+</div>
+
+<!-- COA Modal -->
+<div class="modal-backdrop" id="coaModal">
+  <div class="modal" style="max-width:680px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="coaModalTitle">Create New Account</div>
+        <div class="modal-subtitle" id="coaModalSubtitle">Fill in the details below to create a new GL account</div>
+      </div>
+      <button class="modal-close" onclick="closeCoaModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="coaModalAlertArea"></div>
+
+      <div class="layer-card">
+        <div class="layer-card-header">
+          <span class="layer-card-title">Account Details</span>
+          <div class="toggle-wrap" id="coaStatusToggleWrap" style="display:none;">
+            <span style="font-size:13px;font-weight:600;color:var(--text-secondary);">Status</span>
+            <div class="toggle-track on" id="coaStatusToggle" onclick="coaToggleStatus()">
+              <div class="toggle-thumb"></div>
+            </div>
+            <span class="toggle-label on" id="coaStatusToggleLabel">Active</span>
+          </div>
+        </div>
+
+        <!-- Row 1: Account Number + FS Group -->
+        <div class="form-row cols-2" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">Account Number <span class="req">*</span></label>
+            <input type="text" class="form-control mono" id="coaFieldAccNo"
+              maxlength="10" placeholder="10-digit number"
+              oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+              autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">FS Group <span class="req">*</span></label>
+            <div class="gl-search-wrap" id="fsGroupSearchWrap">
+              <span class="gl-search-icon">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                  <circle cx="5.5" cy="5.5" r="4" stroke="#378ADD" stroke-width="1.5"/>
+                  <line x1="8.7" y1="8.7" x2="11.5" y2="11.5" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <input type="text" class="gl-search-input" id="fsGroupSearchInput"
+                placeholder="Search FS No. or FS Name..."
+                oninput="onFsGroupSearch(this.value)"
+                onfocus="openFsGroupDropdown()"
+                autocomplete="off" />
+              <div class="gl-dropdown" id="fsGroupDropdown"></div>
+              <div class="gl-selected" id="fsGroupSelected">
+                <span class="gl-selected-text" id="fsGroupSelectedText"></span>
+                <button class="gl-clear" onclick="clearFsGroupSelection()" title="Clear">✕</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Account Name TH -->
+        <div class="form-row" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">Account Name (TH) <span class="req">*</span></label>
+            <input type="text" class="form-control" id="coaFieldNameTh" placeholder="Account name in Thai" autocomplete="off" />
+          </div>
+        </div>
+
+        <!-- Row 3: Account Name EN -->
+        <div class="form-row" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">Account Name (EN) <span class="req">*</span></label>
+            <input type="text" class="form-control" id="coaFieldNameEn" placeholder="Account name in English" autocomplete="off" />
+          </div>
+        </div>
+
+        <!-- Row 4: Sub-Ledger Type + Tracking Dimension -->
+        <div class="form-row cols-2" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">Sub-Ledger Type <span class="req">*</span></label>
+            <select class="form-control" id="coaFieldSubLedger">
+              <option value="">Select Sub-Ledger Type</option>
+              <option value="1">Customer</option>
+              <option value="2">Vendor</option>
+              <option value="3">No Subledger</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tracking Dimension <span class="req">*</span></label>
+            <select class="form-control" id="coaFieldTracking">
+              <option value="">Select Tracking Dimension</option>
+              <option value="1">Profit Center</option>
+              <option value="2">Cost Center</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 5: Master Position Topics -->
+        <div class="form-row" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">Master Position Topics</label>
+            <div class="checkbox-group" id="coaTopicsGroup">
+              <label class="checkbox-item">
+                <input type="checkbox" value="1" /> Suspense
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" value="2" /> RPT
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" value="3" /> AR Balance
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 6: Config JV Process toggle -->
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1rem; background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; margin-bottom:0;">
+          <div>
+            <div style="font-size:13px; font-weight:600; color:var(--text-primary);">Config JV Process</div>
+            <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Record this GL to SAP FI line by line instead of grouping</div>
+          </div>
+          <div class="toggle-wrap">
+            <div class="toggle-track off" id="coaJvToggle" onclick="coaToggleJv()">
+              <div class="toggle-thumb"></div>
+            </div>
+            <span class="toggle-label" id="coaJvToggleLabel">Off</span>
+          </div>
+        </div>
+
+        <!-- Config JV Process expanded section -->
+        <div id="coaJvSection" style="display:none; border:1px solid var(--primary); border-top:none; border-radius:0 0 8px 8px; padding:1rem; background:var(--primary-light); margin-bottom:0;">
+          <div class="form-group">
+            <label class="form-label">Reference on JV <span class="req">*</span></label>
+            <div style="display:flex; gap:1rem; margin-top:4px;">
+              <label class="checkbox-item">
+                <input type="radio" name="coaRefSource" value="1" id="coaRefSourceEvent" />
+                Event Code
+              </label>
+              <label class="checkbox-item">
+                <input type="radio" name="coaRefSource" value="2" id="coaRefSourceRef1" />
+                Reference 1
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeCoaModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCoaAccount()">Save Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- FS Group Modal -->
+<div class="modal-backdrop" id="fsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">Create New</div>
+        <div class="modal-subtitle" id="modalSubtitle">Fill in the details below to create a new FS Group</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Validation alert -->
+      <div id="modalAlertArea"></div>
+
+      <!-- Layer Card -->
+      <div class="layer-card">
+        <div class="layer-card-header">
+          <span class="layer-card-title">FS Group Details</span>
+          <!-- Status toggle (edit only) -->
+          <div class="toggle-wrap" id="statusToggleWrap" style="display:none;">
+            <span style="font-size:13px;font-weight:600;color:var(--text-secondary);">Status</span>
+            <div class="toggle-track on" id="statusToggle" onclick="toggleStatus()">
+              <div class="toggle-thumb"></div>
+            </div>
+            <span class="toggle-label on" id="statusToggleLabel">Active</span>
+          </div>
+        </div>
+
+        <div class="form-row cols-2" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label class="form-label">FS No. <span class="req">*</span></label>
+            <input type="text" class="form-control mono" id="fieldFsNo" maxlength="10" placeholder="e.g. A101" oninput="this.value=this.value.toUpperCase()" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">FS Type <span class="req">*</span></label>
+            <select class="form-control" id="fieldFsType">
+              <option value="">Select FS Type</option>
+              <option value="1">Asset</option>
+              <option value="2">Liabilities</option>
+              <option value="3">Equity</option>
+              <option value="4">Profit and Loss</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">FS Name <span class="req">*</span></label>
+            <input type="text" class="form-control" id="fieldFsName" placeholder="Financial statement group name" autocomplete="off" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveGroup()">Save FS Group</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── COA JV toggle state ──
+  let coaJvEnabled = false;
+
+  function coaToggleJv() {
+    coaJvEnabled = !coaJvEnabled;
+    const track = document.getElementById('coaJvToggle');
+    const label = document.getElementById('coaJvToggleLabel');
+    const section = document.getElementById('coaJvSection');
+    if (coaJvEnabled) {
+      track.className = 'toggle-track on';
+      label.className = 'toggle-label on';
+      label.textContent = 'On';
+      section.style.display = 'block';
+    } else {
+      track.className = 'toggle-track off';
+      label.className = 'toggle-label';
+      label.textContent = 'Off';
+      section.style.display = 'none';
+      document.querySelectorAll('input[name="coaRefSource"]').forEach(r => r.checked = false);
+    }
+  }
+
+  function setCoaJv(enabled, refSourceId) {
+    coaJvEnabled = enabled;
+    const track = document.getElementById('coaJvToggle');
+    const label = document.getElementById('coaJvToggleLabel');
+    const section = document.getElementById('coaJvSection');
+    if (enabled) {
+      track.className = 'toggle-track on';
+      label.className = 'toggle-label on';
+      label.textContent = 'On';
+      section.style.display = 'block';
+      if (refSourceId) {
+        const radio = document.querySelector(`input[name="coaRefSource"][value="${refSourceId}"]`);
+        if (radio) radio.checked = true;
+      }
+    } else {
+      track.className = 'toggle-track off';
+      label.className = 'toggle-label';
+      label.textContent = 'Off';
+      section.style.display = 'none';
+      document.querySelectorAll('input[name="coaRefSource"]').forEach(r => r.checked = false);
+    }
+  }
+
+  // ── COA Reference data ──
+  const SUB_LEDGER_TYPES = { 1: 'Customer', 2: 'Vendor', 3: 'No Subledger' };
+  const TRACKING_DIMS    = { 1: 'Profit Center', 2: 'Cost Center' };
+  const TOPICS           = { 1: 'Suspense', 2: 'RPT', 3: 'AR Balance' };
+
+  // ── COA data ──
+  let coaAccounts = [
+    { id:1,  accountNumber:'1101000100', accountNameTh:'เงินสดในมือ',                          accountNameEn:'Cash on Hand',                              fsGroupId:1,  subLedgerTypeId:3, trackingDimensionId:1, masterPositionTopicIds:[1],    isConfigJvProcess:false, referenceSourceId:null, isActive:true  },
+    { id:2,  accountNumber:'1101000200', accountNameTh:'เงินฝากธนาคาร',                         accountNameEn:'Bank Deposits',                             fsGroupId:1,  subLedgerTypeId:3, trackingDimensionId:1, masterPositionTopicIds:[1,2],  isConfigJvProcess:false, referenceSourceId:null, isActive:true  },
+    { id:3,  accountNumber:'1151100100', accountNameTh:'ลูกหนี้สินเชื่อ',                        accountNameEn:'Trade Accounts Receivable-AR Loan',          fsGroupId:3,  subLedgerTypeId:1, trackingDimensionId:1, masterPositionTopicIds:[3],    isConfigJvProcess:true,  referenceSourceId:1,    isActive:true  },
+    { id:4,  accountNumber:'1151100200', accountNameTh:'ลูกหนี้ตามสัญญาเช่าซื้อ',               accountNameEn:'Hire Purchase Receivables',                  fsGroupId:6,  subLedgerTypeId:1, trackingDimensionId:1, masterPositionTopicIds:[3],    isConfigJvProcess:true,  referenceSourceId:2,    isActive:true  },
+    { id:5,  accountNumber:'1201000100', accountNameTh:'เงินลงทุนระยะสั้น',                     accountNameEn:'Short-term Investments',                    fsGroupId:2,  subLedgerTypeId:3, trackingDimensionId:2, masterPositionTopicIds:[2],    isConfigJvProcess:false, referenceSourceId:null, isActive:true  },
+    { id:6,  accountNumber:'1301000100', accountNameTh:'สินค้าคงเหลือ',                          accountNameEn:'Inventories',                               fsGroupId:14, subLedgerTypeId:3, trackingDimensionId:2, masterPositionTopicIds:[1],    isConfigJvProcess:false, referenceSourceId:null, isActive:true  },
+    { id:7,  accountNumber:'1401000100', accountNameTh:'ที่ดิน อาคาร และอุปกรณ์',               accountNameEn:'Property, Plant and Equipment',             fsGroupId:29, subLedgerTypeId:3, trackingDimensionId:1, masterPositionTopicIds:[1,2],  isConfigJvProcess:false, referenceSourceId:null, isActive:true  },
+    { id:8,  accountNumber:'1501000100', accountNameTh:'สินทรัพย์ไม่มีตัวตน',                   accountNameEn:'Intangible Assets',                         fsGroupId:31, subLedgerTypeId:3, trackingDimensionId:1, masterPositionTopicIds:[1],    isConfigJvProcess:false, referenceSourceId:null, isActive:true  },
+    { id:9,  accountNumber:'2101000100', accountNameTh:'เจ้าหนี้การค้า',                         accountNameEn:'Trade Accounts Payable',                    fsGroupId:40, subLedgerTypeId:2, trackingDimensionId:1, masterPositionTopicIds:[1,3],  isConfigJvProcess:true,  referenceSourceId:1,    isActive:true  },
+    { id:10, accountNumber:'2101000200', accountNameTh:'เจ้าหนี้อื่น',                           accountNameEn:'Other Payables',                            fsGroupId:40, subLedgerTypeId:2, trackingDimensionId:2, masterPositionTopicIds:[1],    isConfigJvProcess:false, referenceSourceId:null, isActive:true  },
+    { id:11, accountNumber:'2201000100', accountNameTh:'เงินกู้ยืมระยะยาว',                     accountNameEn:'Long-term Borrowings',                      fsGroupId:48, subLedgerTypeId:3, trackingDimensionId:1, masterPositionTopicIds:[2],    isConfigJvProcess:false, referenceSourceId:null, isActive:true  },
+    { id:12, accountNumber:'3101000100', accountNameTh:'ทุนจดทะเบียน',                           accountNameEn:'Registered Share Capital',                  fsGroupId:54, subLedgerTypeId:3, trackingDimensionId:1, masterPositionTopicIds:[1],    isConfigJvProcess:false, referenceSourceId:null, isActive:true  },
+    { id:13, accountNumber:'4101000100', accountNameTh:'รายได้ดอกเบี้ย',                         accountNameEn:'Interest Income',                           fsGroupId:61, subLedgerTypeId:3, trackingDimensionId:1, masterPositionTopicIds:[1,2,3],isConfigJvProcess:false, referenceSourceId:null, isActive:false },
+    { id:14, accountNumber:'4102000100', accountNameTh:'รายได้ค่าธรรมเนียม',                    accountNameEn:'Fee Income',                                fsGroupId:63, subLedgerTypeId:3, trackingDimensionId:2, masterPositionTopicIds:[2],    isConfigJvProcess:false, referenceSourceId:null, isActive:false },
+    { id:15, accountNumber:'5101000100', accountNameTh:'ค่าใช้จ่ายพนักงาน',                     accountNameEn:'Personnel Expenses',                        fsGroupId:77, subLedgerTypeId:3, trackingDimensionId:1, masterPositionTopicIds:[1],    isConfigJvProcess:false, referenceSourceId:null, isActive:false },
+    { id:16, accountNumber:'5201000100', accountNameTh:'ค่าเสื่อมราคาและค่าตัดจำหน่าย',        accountNameEn:'Depreciation and Amortisation',             fsGroupId:83, subLedgerTypeId:3, trackingDimensionId:2, masterPositionTopicIds:[1,2],  isConfigJvProcess:false, referenceSourceId:null, isActive:false },
+  ];
+  let coaNextId = 17;
+  let coaStatusFilter = 'active';
+  let coaSearchTerm = '';
+  let coaEditingId = null;
+  let coaIsActive = true;
+  let coaSelectedFsGroupId = null;
+
+  // ── COA Table ──
+  function renderCoaTable() {
+    let filtered = [...coaAccounts];
+    if (coaStatusFilter === 'active')   filtered = filtered.filter(a => a.isActive !== false);
+    if (coaStatusFilter === 'inactive') filtered = filtered.filter(a => a.isActive === false);
+    if (coaSearchTerm) {
+      const q = coaSearchTerm.toLowerCase();
+      filtered = filtered.filter(a => {
+        const fg = fsGroups.find(g => g.id === a.fsGroupId);
+        return (
+          a.accountNumber.includes(q) ||
+          a.accountNameTh.toLowerCase().includes(q) ||
+          a.accountNameEn.toLowerCase().includes(q) ||
+          (fg && fg.groupCode.toLowerCase().includes(q)) ||
+          (fg && fg.groupName.toLowerCase().includes(q))
+        );
+      });
+    }
+
+    const tbody = document.getElementById('coaTableBody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6">
+        <div class="empty-state">
+          <div class="empty-icon">📂</div>
+          <p>No accounts found.</p>
+        </div>
+      </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(a => {
+      const fg = fsGroups.find(g => g.id === a.fsGroupId);
+      const fgLabel = fg ? `${escHtml(fg.groupCode)} — ${escHtml(fg.groupName)}` : '—';
+      const statusCls = a.isActive !== false ? 'status-active' : 'status-inactive';
+      const statusLabel = a.isActive !== false ? 'Active' : 'Inactive';
+      const rowStyle = a.isActive !== false ? '' : 'opacity:0.7;';
+      return `<tr style="${rowStyle}">
+        <td><span class="mono">${escHtml(a.accountNumber)}</span></td>
+        <td>${escHtml(a.accountNameTh)}</td>
+        <td>${escHtml(a.accountNameEn)}</td>
+        <td style="font-size:12px;">${fgLabel}</td>
+        <td><span class="status-badge ${statusCls}">${statusLabel}</span></td>
+        <td><button class="btn btn-edit btn-sm" onclick="openCoaEditModal(${a.id})">Edit</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function onCoaSearch(val) {
+    coaSearchTerm = val;
+    const clearBtn = document.getElementById('coaSearchClear');
+    if (val) clearBtn.classList.add('visible'); else clearBtn.classList.remove('visible');
+    renderCoaTable();
+  }
+  function clearCoaSearch() {
+    document.getElementById('coaSearchInput').value = '';
+    document.getElementById('coaSearchClear').classList.remove('visible');
+    coaSearchTerm = '';
+    renderCoaTable();
+  }
+  function setCoaStatusFilter(val) {
+    coaStatusFilter = val;
+    renderCoaTable();
+  }
+
+  // ── FS Group smart search inside COA modal ──
+  function onFsGroupSearch(val) {
+    const dropdown = document.getElementById('fsGroupDropdown');
+    if (!val.trim()) { dropdown.classList.remove('open'); dropdown.innerHTML = ''; return; }
+    const q = val.toLowerCase();
+    const matches = fsGroups
+      .filter(g => g.isActive !== false)
+      .filter(g => g.groupCode.toLowerCase().includes(q) || g.groupName.toLowerCase().includes(q))
+      .slice(0, 30);
+    if (matches.length === 0) {
+      dropdown.innerHTML = `<div class="gl-option" style="color:var(--text-secondary);cursor:default;">No results found</div>`;
+    } else {
+      dropdown.innerHTML = matches.map(g =>
+        `<div class="gl-option" onclick="selectFsGroup(${g.id})">
+          <span class="gl-option-code">${escHtml(g.groupCode)}</span>
+          <span class="gl-option-name">${escHtml(g.groupName)}</span>
+        </div>`
+      ).join('');
+    }
+    dropdown.classList.add('open');
+  }
+
+  function openFsGroupDropdown() {
+    const val = document.getElementById('fsGroupSearchInput').value;
+    if (val.trim()) onFsGroupSearch(val);
+  }
+
+  function selectFsGroup(id, code, name) {
+    coaSelectedFsGroupId = id;
+    const wrap = document.getElementById('fsGroupSearchWrap');
+    const input = document.getElementById('fsGroupSearchInput');
+    input.style.display = 'none';
+    document.getElementById('fsGroupDropdown').classList.remove('open');
+    document.getElementById('fsGroupDropdown').innerHTML = '';
+    document.getElementById('fsGroupSelectedText').textContent = `${code} — ${name}`;
+    document.getElementById('fsGroupSelected').classList.add('visible');
+    wrap.classList.add('has-selection');
+  }
+
+  function clearFsGroupSelection() {
+    coaSelectedFsGroupId = null;
+    const wrap = document.getElementById('fsGroupSearchWrap');
+    const input = document.getElementById('fsGroupSearchInput');
+    input.value = '';
+    input.style.display = '';
+    document.getElementById('fsGroupSelected').classList.remove('visible');
+    document.getElementById('fsGroupDropdown').classList.remove('open');
+    wrap.classList.remove('has-selection');
+  }
+
+  // Close FS Group dropdown on outside click
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('fsGroupSearchWrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('fsGroupDropdown').classList.remove('open');
+    }
+  });
+
+  // ── COA Modal ──
+  function openCoaCreateModal() {
+    coaEditingId = null;
+    coaIsActive = true;
+    document.getElementById('coaModalTitle').textContent = 'Create New Account';
+    document.getElementById('coaModalSubtitle').textContent = 'Fill in the details below to create a new GL account';
+    document.getElementById('coaFieldAccNo').value = '';
+    document.getElementById('coaFieldNameTh').value = '';
+    document.getElementById('coaFieldNameEn').value = '';
+    document.getElementById('coaFieldSubLedger').value = '';
+    document.getElementById('coaFieldTracking').value = '';
+    clearFsGroupSelection();
+    document.querySelectorAll('#coaTopicsGroup input[type="checkbox"]').forEach(cb => cb.checked = false);
+    setCoaJv(false, null);
+    document.getElementById('coaStatusToggleWrap').style.display = 'none';
+    document.getElementById('coaModalAlertArea').innerHTML = '';
+    document.getElementById('coaModal').classList.add('open');
+  }
+
+  function openCoaEditModal(id) {
+    const a = coaAccounts.find(x => x.id === id);
+    if (!a) return;
+    coaEditingId = id;
+    coaIsActive = a.isActive !== false;
+    document.getElementById('coaModalTitle').textContent = 'Edit Account';
+    document.getElementById('coaModalSubtitle').textContent = 'Update the details for this GL account';
+    document.getElementById('coaFieldAccNo').value = a.accountNumber;
+    document.getElementById('coaFieldNameTh').value = a.accountNameTh;
+    document.getElementById('coaFieldNameEn').value = a.accountNameEn;
+    document.getElementById('coaFieldSubLedger').value = String(a.subLedgerTypeId);
+    document.getElementById('coaFieldTracking').value = String(a.trackingDimensionId);
+
+    // Restore FS Group selection
+    clearFsGroupSelection();
+    const fg = fsGroups.find(g => g.id === a.fsGroupId);
+    if (fg) selectFsGroup(fg.id, fg.groupCode, fg.groupName);
+
+    // Restore checkboxes
+    document.querySelectorAll('#coaTopicsGroup input[type="checkbox"]').forEach(cb => {
+      cb.checked = a.masterPositionTopicIds.includes(parseInt(cb.value));
+    });
+
+    // Restore JV config
+    setCoaJv(a.isConfigJvProcess || false, a.referenceSourceId || null);
+
+    document.getElementById('coaStatusToggleWrap').style.display = 'flex';
+    coaUpdateToggleUI();
+    document.getElementById('coaModalAlertArea').innerHTML = '';
+    document.getElementById('coaModal').classList.add('open');
+  }
+
+  function closeCoaModal() {
+    document.getElementById('coaModal').classList.remove('open');
+  }
+
+  function coaToggleStatus() {
+    coaIsActive = !coaIsActive;
+    coaUpdateToggleUI();
+  }
+  function coaUpdateToggleUI() {
+    const track = document.getElementById('coaStatusToggle');
+    const label = document.getElementById('coaStatusToggleLabel');
+    if (coaIsActive) {
+      track.className = 'toggle-track on';
+      label.className = 'toggle-label on';
+      label.textContent = 'Active';
+    } else {
+      track.className = 'toggle-track off';
+      label.className = 'toggle-label';
+      label.textContent = 'Inactive';
+    }
+  }
+
+  function saveCoaAccount() {
+    const accNo      = document.getElementById('coaFieldAccNo').value.trim();
+    const nameTh     = document.getElementById('coaFieldNameTh').value.trim();
+    const nameEn     = document.getElementById('coaFieldNameEn').value.trim();
+    const subLedger  = document.getElementById('coaFieldSubLedger').value;
+    const tracking   = document.getElementById('coaFieldTracking').value;
+    const topicIds   = Array.from(document.querySelectorAll('#coaTopicsGroup input[type="checkbox"]:checked'))
+                         .map(cb => parseInt(cb.value));
+    const refSourceEl = document.querySelector('input[name="coaRefSource"]:checked');
+    const refSourceId = refSourceEl ? parseInt(refSourceEl.value) : null;
+
+    if (!accNo || !coaSelectedFsGroupId || !nameTh || !nameEn || !subLedger || !tracking) {
+      showCoaModalAlert('Please fill in all required fields.');
+      return;
+    }
+    if (accNo.length !== 10) {
+      showCoaModalAlert('Account Number must be exactly 10 digits.');
+      return;
+    }
+    if (coaJvEnabled && !refSourceId) {
+      showCoaModalAlert('Please select a Reference Source for Config JV Process.');
+      return;
+    }
+
+    clearCoaModalAlert();
+
+    if (coaEditingId === null) {
+      const newAcc = {
+        id: coaNextId++,
+        accountNumber: accNo,
+        accountNameTh: nameTh,
+        accountNameEn: nameEn,
+        fsGroupId: coaSelectedFsGroupId,
+        subLedgerTypeId: parseInt(subLedger),
+        trackingDimensionId: parseInt(tracking),
+        masterPositionTopicIds: topicIds,
+        isConfigJvProcess: coaJvEnabled,
+        referenceSourceId: coaJvEnabled ? refSourceId : null,
+        isActive: true,
+      };
+      coaAccounts.push(newAcc);
+      const payload = {
+        accountNumber: accNo,
+        accountNameTh: nameTh,
+        accountNameEn: nameEn,
+        fsGroupId: coaSelectedFsGroupId,
+        subLedgerTypeId: parseInt(subLedger),
+        trackingDimensionId: parseInt(tracking),
+        masterPositionTopicIds: topicIds,
+        isConfigJvProcess: coaJvEnabled,
+        referenceSourceId: coaJvEnabled ? refSourceId : null,
+      };
+      console.log('=== CHART OF ACCOUNT API PAYLOAD ===', JSON.stringify(payload, null, 2));
+      closeCoaModal();
+      renderCoaTable();
+      showToast('Create successfully');
+    } else {
+      const idx = coaAccounts.findIndex(a => a.id === coaEditingId);
+      if (idx === -1) return;
+      coaAccounts[idx].accountNumber = accNo;
+      coaAccounts[idx].accountNameTh = nameTh;
+      coaAccounts[idx].accountNameEn = nameEn;
+      coaAccounts[idx].fsGroupId = coaSelectedFsGroupId;
+      coaAccounts[idx].subLedgerTypeId = parseInt(subLedger);
+      coaAccounts[idx].trackingDimensionId = parseInt(tracking);
+      coaAccounts[idx].masterPositionTopicIds = topicIds;
+      coaAccounts[idx].isConfigJvProcess = coaJvEnabled;
+      coaAccounts[idx].referenceSourceId = coaJvEnabled ? refSourceId : null;
+      coaAccounts[idx].isActive = coaIsActive;
+      const payload = {
+        accountNumber: accNo,
+        accountNameTh: nameTh,
+        accountNameEn: nameEn,
+        fsGroupId: coaSelectedFsGroupId,
+        isActive: coaIsActive,
+        subLedgerTypeId: parseInt(subLedger),
+        trackingDimensionId: parseInt(tracking),
+        masterPositionTopicIds: topicIds,
+        isConfigJvProcess: coaJvEnabled,
+        referenceSourceId: coaJvEnabled ? refSourceId : null,
+      };
+      console.log('=== CHART OF ACCOUNT API PAYLOAD ===', JSON.stringify(payload, null, 2));
+      closeCoaModal();
+      renderCoaTable();
+      showToast('Edit successfully');
+    }
+  }
+
+  function showCoaModalAlert(msg) {
+    document.getElementById('coaModalAlertArea').innerHTML = `
+      <div class="alert alert-danger">
+        <span>${msg}</span>
+        <button class="alert-close" onclick="clearCoaModalAlert()">✕</button>
+      </div>`;
+  }
+  function clearCoaModalAlert() {
+    document.getElementById('coaModalAlertArea').innerHTML = '';
+  }
+
+  document.getElementById('coaModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCoaModal();
+  });
+
+  // ── FS Type tab data ──
+  let fsTypes = [
+    { id:1, typeCode:'A',  typeNameTh:'สินทรัพย์',          typeNameEn:'Assets',              isActive:true },
+    { id:2, typeCode:'L',  typeNameTh:'หนี้สิน',             typeNameEn:'Liabilities',         isActive:true },
+    { id:3, typeCode:'SE', typeNameTh:'ส่วนของผู้ถือหุ้น',   typeNameEn:"Shareholders' Equity",isActive:true },
+    { id:4, typeCode:'R',  typeNameTh:'รายได้',              typeNameEn:'Revenue',             isActive:true },
+    { id:5, typeCode:'E',  typeNameTh:'ค่าใช้จ่าย',          typeNameEn:'Expense',             isActive:true },
+    { id:6, typeCode:'PL', typeNameTh:'กำไรขาดทุน',          typeNameEn:'Profit & Loss',       isActive:true },
+  ];
+  let fstNextId = 7;
+  let fstStatusFilter = 'active';
+  let fstSearchTerm = '';
+  let fstEditingId = null;
+  let fstIsActive = true;
+
+  function renderFstTable() {
+    let filtered = [...fsTypes];
+    if (fstStatusFilter === 'active')   filtered = filtered.filter(t => t.isActive !== false);
+    if (fstStatusFilter === 'inactive') filtered = filtered.filter(t => t.isActive === false);
+    if (fstSearchTerm) {
+      const q = fstSearchTerm.toLowerCase();
+      filtered = filtered.filter(t =>
+        t.typeCode.toLowerCase().includes(q) ||
+        t.typeNameTh.toLowerCase().includes(q) ||
+        t.typeNameEn.toLowerCase().includes(q)
+      );
+    }
+    const tbody = document.getElementById('fstTableBody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5">
+        <div class="empty-state"><div class="empty-icon">📂</div><p>No FS types found.</p></div>
+      </td></tr>`;
+      return;
+    }
+    tbody.innerHTML = filtered.map(t => {
+      const statusCls   = t.isActive !== false ? 'status-active' : 'status-inactive';
+      const statusLabel = t.isActive !== false ? 'Active' : 'Inactive';
+      const rowStyle    = t.isActive !== false ? '' : 'opacity:0.7;';
+      return `<tr style="${rowStyle}">
+        <td><span class="mono">${escHtml(t.typeCode)}</span></td>
+        <td>${escHtml(t.typeNameTh)}</td>
+        <td>${escHtml(t.typeNameEn)}</td>
+        <td><span class="status-badge ${statusCls}">${statusLabel}</span></td>
+        <td><button class="btn btn-edit btn-sm" onclick="openFstEditModal(${t.id})">Edit</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function onFstSearch(val) {
+    fstSearchTerm = val;
+    const clearBtn = document.getElementById('fstSearchClear');
+    if (val) clearBtn.classList.add('visible'); else clearBtn.classList.remove('visible');
+    renderFstTable();
+  }
+  function clearFstSearch() {
+    document.getElementById('fstSearchInput').value = '';
+    document.getElementById('fstSearchClear').classList.remove('visible');
+    fstSearchTerm = '';
+    renderFstTable();
+  }
+  function setFstStatusFilter(val) {
+    fstStatusFilter = val;
+    renderFstTable();
+  }
+
+  function openFstCreateModal() {
+    fstEditingId = null;
+    fstIsActive = true;
+    document.getElementById('fstModalTitle').textContent = 'Create New FS Type';
+    document.getElementById('fstModalSubtitle').textContent = 'Fill in the details below to create a new FS Type';
+    document.getElementById('fstFieldCode').value = '';
+    document.getElementById('fstFieldNameTh').value = '';
+    document.getElementById('fstFieldNameEn').value = '';
+    document.getElementById('fstStatusToggleWrap').style.display = 'none';
+    document.getElementById('fstModalAlertArea').innerHTML = '';
+    document.getElementById('fstModal').classList.add('open');
+  }
+
+  function openFstEditModal(id) {
+    const t = fsTypes.find(x => x.id === id);
+    if (!t) return;
+    fstEditingId = id;
+    fstIsActive = t.isActive !== false;
+    document.getElementById('fstModalTitle').textContent = 'Edit FS Type';
+    document.getElementById('fstModalSubtitle').textContent = 'Update the details for this FS Type';
+    document.getElementById('fstFieldCode').value = t.typeCode;
+    document.getElementById('fstFieldNameTh').value = t.typeNameTh;
+    document.getElementById('fstFieldNameEn').value = t.typeNameEn;
+    document.getElementById('fstStatusToggleWrap').style.display = 'flex';
+    fstUpdateToggleUI();
+    document.getElementById('fstModalAlertArea').innerHTML = '';
+    document.getElementById('fstModal').classList.add('open');
+  }
+
+  function closeFstModal() {
+    document.getElementById('fstModal').classList.remove('open');
+  }
+
+  function fstToggleStatus() {
+    fstIsActive = !fstIsActive;
+    fstUpdateToggleUI();
+  }
+  function fstUpdateToggleUI() {
+    const track = document.getElementById('fstStatusToggle');
+    const label = document.getElementById('fstStatusToggleLabel');
+    if (fstIsActive) {
+      track.className = 'toggle-track on';
+      label.className = 'toggle-label on';
+      label.textContent = 'Active';
+    } else {
+      track.className = 'toggle-track off';
+      label.className = 'toggle-label';
+      label.textContent = 'Inactive';
+    }
+  }
+
+  function saveFstType() {
+    const code   = document.getElementById('fstFieldCode').value.trim().toUpperCase();
+    const nameTh = document.getElementById('fstFieldNameTh').value.trim();
+    const nameEn = document.getElementById('fstFieldNameEn').value.trim();
+
+    if (!code || !nameTh || !nameEn) {
+      document.getElementById('fstModalAlertArea').innerHTML = `
+        <div class="alert alert-danger">
+          <span>Please fill in all required fields.</span>
+          <button class="alert-close" onclick="this.parentElement.parentElement.innerHTML=''">✕</button>
+        </div>`;
+      return;
+    }
+
+    // Type Code must be unique among Active records (excluding the record being edited)
+    const duplicateActive = fsTypes.some(t =>
+      t.typeCode === code &&
+      t.isActive !== false &&
+      t.id !== fstEditingId
+    );
+    if (duplicateActive) {
+      document.getElementById('fstModalAlertArea').innerHTML = `
+        <div class="alert alert-danger">
+          <span>Type Code "${code}" is already used by an active FS Type.</span>
+          <button class="alert-close" onclick="this.parentElement.parentElement.innerHTML=''">✕</button>
+        </div>`;
+      return;
+    }
+
+    if (fstEditingId === null) {
+      const newType = { id: fstNextId++, typeCode: code, typeNameTh: nameTh, typeNameEn: nameEn, isActive: true };
+      fsTypes.push(newType);
+      const payload = { typeCode: code, typeNameTh: nameTh, typeNameEn: nameEn };
+      console.log('=== FS TYPE API PAYLOAD ===', JSON.stringify(payload, null, 2));
+    } else {
+      const idx = fsTypes.findIndex(t => t.id === fstEditingId);
+      if (idx === -1) return;
+      fsTypes[idx].typeCode   = code;
+      fsTypes[idx].typeNameTh = nameTh;
+      fsTypes[idx].typeNameEn = nameEn;
+      fsTypes[idx].isActive   = fstIsActive;
+      const payload = { typeCode: code, typeNameTh: nameTh, typeNameEn: nameEn, isActive: fstIsActive };
+      console.log('=== FS TYPE API PAYLOAD ===', JSON.stringify(payload, null, 2));
+    }
+
+    const isCreate = fstEditingId === null;
+    closeFstModal();
+    renderFstTable();
+    showToast(isCreate ? 'Create successfully' : 'Edit successfully');
+  }
+
+  document.getElementById('fstModal').addEventListener('click', function(e) {
+    if (e.target === this) closeFstModal();
+  });
+
+  // ── FS Type reference ──
+  const FS_TYPES = {
+    1: { label: 'Asset',          cls: 'fs-type-asset' },
+    2: { label: 'Liabilities',    cls: 'fs-type-liabilities' },
+    3: { label: 'Equity',         cls: 'fs-type-equity' },
+    4: { label: 'Profit and Loss',cls: 'fs-type-pl' },
+  };
+
+  // ── Seed data ──
+  let fsGroups = [
+    { id:1,  groupCode:'A101',  fsGroupTypeId:1, groupName:'เงินสดและรายการเทียบเท่าเงินสด', isActive:true },
+    { id:2,  groupCode:'A102',  fsGroupTypeId:1, groupName:'เงินลงทุนชั่วคราว', isActive:true },
+    { id:3,  groupCode:'A103',  fsGroupTypeId:1, groupName:'ลูกหนี้การค้าและลูกหนี้อื่น', isActive:true },
+    { id:4,  groupCode:'A104',  fsGroupTypeId:1, groupName:'ลูกหนี้เงินให้สินเชื่อ - ส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:5,  groupCode:'A104A', fsGroupTypeId:1, groupName:'ลูกหนี้เงินให้สินเชื่อ - ส่วนที่ถึงกำหนดชำระภายในหนึ่งปี - ค่าเผื่อฯ', isActive:true },
+    { id:6,  groupCode:'A105',  fsGroupTypeId:1, groupName:'ลูกหนี้ตามสัญญาเช่าซื้อ - ส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:7,  groupCode:'A105A', fsGroupTypeId:1, groupName:'ลูกหนี้ตามสัญญาเช่าซื้อ - ส่วนที่ถึงกำหนดชำระภายในหนึ่งปี - ค่าเผื่อฯ', isActive:true },
+    { id:8,  groupCode:'A106',  fsGroupTypeId:1, groupName:'ลูกหนี้ขายฝาก - ส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:9,  groupCode:'A106A', fsGroupTypeId:1, groupName:'ลูกหนี้ขายฝาก - ส่วนที่ถึงกำหนดชำระภายในหนึ่งปี - ค่าเผื่อฯ', isActive:true },
+    { id:10, groupCode:'A107',  fsGroupTypeId:1, groupName:'ทรัพย์สินรอการขาย - สุทธิ', isActive:true },
+    { id:11, groupCode:'A108',  fsGroupTypeId:1, groupName:'เงินให้กู้ยืมระยะสั้น', isActive:true },
+    { id:12, groupCode:'A109',  fsGroupTypeId:1, groupName:'เงินให้กู้ยืมระยะยาว-ส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:13, groupCode:'A110',  fsGroupTypeId:1, groupName:'สินทรัพย์หมุนเวียนอื่น', isActive:true },
+    { id:14, groupCode:'A111',  fsGroupTypeId:1, groupName:'สินค้าคงเหลือ', isActive:true },
+    { id:15, groupCode:'A112',  fsGroupTypeId:1, groupName:'ลูกหนี้ประกันผ่อนชำระ', isActive:true },
+    { id:16, groupCode:'A112A', fsGroupTypeId:1, groupName:'ลูกหนี้ประกันผ่อนชำระ - ค่าเผื่อฯ', isActive:true },
+    { id:17, groupCode:'A201',  fsGroupTypeId:1, groupName:'เงินฝากธนาคารที่มีภาระค้ำประกัน', isActive:true },
+    { id:18, groupCode:'A202',  fsGroupTypeId:1, groupName:'เงินลงทุนระยะยาว - เงินฝากประจำ', isActive:true },
+    { id:19, groupCode:'A203',  fsGroupTypeId:1, groupName:'เงินลงทุนในบริษัทย่อย', isActive:true },
+    { id:20, groupCode:'A204',  fsGroupTypeId:1, groupName:'เงินลงทุนเผื่อขาย', isActive:true },
+    { id:21, groupCode:'A205',  fsGroupTypeId:1, groupName:'เงินลงทุนระยะยาวอื่น', isActive:true },
+    { id:22, groupCode:'A206',  fsGroupTypeId:1, groupName:'ลูกหนี้เงินให้สินเชื่อ - สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:23, groupCode:'A206A', fsGroupTypeId:1, groupName:'ลูกหนี้เงินให้สินเชื่อ - สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี - ค่าเผื่อฯ', isActive:true },
+    { id:24, groupCode:'A207',  fsGroupTypeId:1, groupName:'ลูกหนี้ตามสัญญาเช่าซื้อ - สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:25, groupCode:'A207A', fsGroupTypeId:1, groupName:'ลูกหนี้ตามสัญญาเช่าซื้อ - สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี - ค่าเผื่อฯ', isActive:true },
+    { id:26, groupCode:'A208',  fsGroupTypeId:1, groupName:'ลูกหนี้ขายฝาก - สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:27, groupCode:'A208A', fsGroupTypeId:1, groupName:'ลูกหนี้ขายฝาก - สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี - ค่าเผื่อฯ', isActive:true },
+    { id:28, groupCode:'A209',  fsGroupTypeId:1, groupName:'เงินให้กู้ยืมระยะยาว-สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:29, groupCode:'A210',  fsGroupTypeId:1, groupName:'อาคารและอุปกรณ์', isActive:true },
+    { id:30, groupCode:'A211',  fsGroupTypeId:1, groupName:'อสังหาริมทรัพย์เพื่อการลงทุน', isActive:true },
+    { id:31, groupCode:'A212',  fsGroupTypeId:1, groupName:'สินทรัพย์ไม่มีตัวตน', isActive:true },
+    { id:32, groupCode:'A212A', fsGroupTypeId:1, groupName:'สินทรัพย์ไม่มีตัวตน - เพื่อขาย', isActive:true },
+    { id:33, groupCode:'A213',  fsGroupTypeId:1, groupName:'สินทรัพย์ภาษีเงินได้รอการตัดบัญชี', isActive:true },
+    { id:34, groupCode:'A214',  fsGroupTypeId:1, groupName:'สินทรัพย์ไม่หมุนเวียนอื่น', isActive:true },
+    { id:35, groupCode:'A215',  fsGroupTypeId:1, groupName:'สิทธิการใช้สินทรัพย์', isActive:true },
+    { id:36, groupCode:'A216',  fsGroupTypeId:1, groupName:'สินทรัพย์ตราสารอนุพันธ์', isActive:true },
+    { id:37, groupCode:'L101',  fsGroupTypeId:2, groupName:'เงินกู้ยืมระยะสั้นจากสถาบันการเงิน', isActive:true },
+    { id:38, groupCode:'L102',  fsGroupTypeId:2, groupName:'เงินกู้ยืมระยะสั้น', isActive:true },
+    { id:39, groupCode:'L103',  fsGroupTypeId:2, groupName:'หนี้สินตราสารอนุพันธ์', isActive:true },
+    { id:40, groupCode:'L104',  fsGroupTypeId:2, groupName:'เจ้าหนี้การค้าและเจ้าหนี้อื่น', isActive:true },
+    { id:41, groupCode:'L105',  fsGroupTypeId:2, groupName:'ส่วนของเงินกู้ยืมระยะยาวที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:42, groupCode:'L106',  fsGroupTypeId:2, groupName:'ส่วนของหุ้นกู้ระยะยาวที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:43, groupCode:'L107',  fsGroupTypeId:2, groupName:'ส่วนของหนี้สินตามสัญญาเช่าซื้อและเช่าการเงินที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:44, groupCode:'L108',  fsGroupTypeId:2, groupName:'ภาษีเงินได้ค้างจ่าย', isActive:true },
+    { id:45, groupCode:'L109',  fsGroupTypeId:2, groupName:'หนี้สินหมุนเวียนอื่น', isActive:true },
+    { id:46, groupCode:'L109A', fsGroupTypeId:2, groupName:'ประมาณการค่าชดเชยผลเสียหายจากการค้ำประกัน', isActive:true },
+    { id:47, groupCode:'L110',  fsGroupTypeId:2, groupName:'ส่วนของหนี้สินตามสัญญาเช่าที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:48, groupCode:'L201',  fsGroupTypeId:2, groupName:'เงินกู้ยืมระยะยาว - สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:49, groupCode:'L202',  fsGroupTypeId:2, groupName:'หุ้นกู้ระยะยาว - สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:50, groupCode:'L203',  fsGroupTypeId:2, groupName:'หนี้สินตามสัญญาเช่าซื้อและเช่าการเงิน - สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:51, groupCode:'L205',  fsGroupTypeId:2, groupName:'ประมาณการหนี้สิน - สำรองผลประโยชน์ระยะยาวของพนักงาน', isActive:true },
+    { id:52, groupCode:'L207',  fsGroupTypeId:2, groupName:'หนี้สินไม่หมุนเวียนอื่น', isActive:true },
+    { id:53, groupCode:'L208',  fsGroupTypeId:2, groupName:'หนี้สินตามสัญญาเช่า - สุทธิจากส่วนที่ถึงกำหนดชำระภายในหนึ่งปี', isActive:true },
+    { id:54, groupCode:'SE101', fsGroupTypeId:3, groupName:'ทุนจดทะเบียน ออกจำหน่ายและชำระเต็มมูลค่าแล้ว', isActive:true },
+    { id:55, groupCode:'SE102', fsGroupTypeId:3, groupName:'ส่วนเกินมูลค่าหุ้นสามัญ', isActive:true },
+    { id:56, groupCode:'SE103', fsGroupTypeId:3, groupName:'ใบสำคัญแสดงสิทธิที่จะซื้อหุ้น', isActive:true },
+    { id:57, groupCode:'SE104', fsGroupTypeId:3, groupName:'กำไรสะสมจัดสรรแล้ว - สำรองตามกฎหมาย', isActive:true },
+    { id:58, groupCode:'SE105', fsGroupTypeId:3, groupName:'กำไรสะสมยังไม่ได้จัดสรร', isActive:true },
+    { id:59, groupCode:'SE106', fsGroupTypeId:3, groupName:'องค์ประกอบอื่นของส่วนของผู้ถือหุ้น', isActive:true },
+    { id:60, groupCode:'SEXXX', fsGroupTypeId:3, groupName:'None Group', isActive:true },
+    { id:61, groupCode:'PL101',  fsGroupTypeId:4, groupName:'รายได้ดอกเบี้ยและค่าธรรมเนียมในการให้บริการสินเชื่อ (Interest and fee income)', isActive:true },
+    { id:62, groupCode:'PL101A', fsGroupTypeId:4, groupName:'รายได้ค่าบริการด้านไอที', isActive:true },
+    { id:63, groupCode:'PL102',  fsGroupTypeId:4, groupName:'รายได้ค่าธรรมเนียม (Guarantee)', isActive:true },
+    { id:64, groupCode:'PL102A', fsGroupTypeId:4, groupName:'รายได้ปรับปรุงจาก STL to EIR (Guarantee)', isActive:true },
+    { id:65, groupCode:'PL103',  fsGroupTypeId:4, groupName:'ค่าปรับชำระล่วงหน้า (Prepayment Fee)', isActive:true },
+    { id:66, groupCode:'PL104A', fsGroupTypeId:4, groupName:'ค่าปรับล่าช้า (Late Penalty Fee)', isActive:true },
+    { id:67, groupCode:'PL104B', fsGroupTypeId:4, groupName:'ค่าติดตามทวงถาม (Collection Fee)', isActive:true },
+    { id:68, groupCode:'PL105',  fsGroupTypeId:4, groupName:'รายได้ค่านายหน้า (Commission income)', isActive:true },
+    { id:69, groupCode:'PL106',  fsGroupTypeId:4, groupName:'รายได้ค่าธรรมเนียมและค่าบริการอื่น (Other fee & Service income)', isActive:true },
+    { id:70, groupCode:'PL107',  fsGroupTypeId:4, groupName:'รายได้อื่น (Other Income)', isActive:true },
+    { id:71, groupCode:'PL108',  fsGroupTypeId:4, groupName:'รายได้ค่าบริหารจัดการ (Management fee income)', isActive:true },
+    { id:72, groupCode:'PL109',  fsGroupTypeId:4, groupName:'รายได้เงินปันผล (Dividend Income)', isActive:true },
+    { id:73, groupCode:'PL110',  fsGroupTypeId:4, groupName:'รายได้จากการขาย (Sales)', isActive:true },
+    { id:74, groupCode:'PL111',  fsGroupTypeId:4, groupName:'ต้นทุนขาย (Cost of Good Sold)', isActive:true },
+    { id:75, groupCode:'PL112',  fsGroupTypeId:4, groupName:'รายได้ค่าอบรมสัมนา (Training income)', isActive:true },
+    { id:76, groupCode:'PL113',  fsGroupTypeId:4, groupName:'ต้นทุนการให้บริการ (Cost of Service)', isActive:true },
+    { id:77, groupCode:'PL201',  fsGroupTypeId:4, groupName:'ค่าใช้จ่ายเกี่ยวกับพนักงาน (Personnel expenses)', isActive:true },
+    { id:78, groupCode:'PL202',  fsGroupTypeId:4, groupName:'ค่าภาษีอื่น ๆ (Tax expenses)', isActive:true },
+    { id:79, groupCode:'PL203',  fsGroupTypeId:4, groupName:'หนี้สูญและหนี้สงสัยจะสูญ (Doubtful expenses)', isActive:true },
+    { id:80, groupCode:'PL203A', fsGroupTypeId:4, groupName:'หนี้สูญรับคืน (Recovery from write off)', isActive:true },
+    { id:81, groupCode:'PL203B', fsGroupTypeId:4, groupName:'หนี้สูญรับคืน (Recovery from write off) - Insurance', isActive:true },
+    { id:82, groupCode:'PL204',  fsGroupTypeId:4, groupName:'ขาดทุนจากการปรับโครงสร้างหนี้ (Loss on debt restructuring)', isActive:true },
+    { id:83, groupCode:'PL205',  fsGroupTypeId:4, groupName:'ค่าเสื่อมราคาและค่าตัดจำหน่าย (Depreciation and amortisation expenses)', isActive:true },
+    { id:84, groupCode:'PL206',  fsGroupTypeId:4, groupName:'ค่าเดินทาง (Travelling and transportation expenses)', isActive:true },
+    { id:85, groupCode:'PL207',  fsGroupTypeId:4, groupName:'ค่าเช่าและค่าบริการ (Rental and service expenses)', isActive:true },
+    { id:86, groupCode:'PL207A', fsGroupTypeId:4, groupName:'ค่าบริการอื่น (Other service expenses)', isActive:true },
+    { id:87, groupCode:'PL208',  fsGroupTypeId:4, groupName:'ค่าอรรถประโยชน์ (Utilities expenses)', isActive:true },
+    { id:88, groupCode:'PL209',  fsGroupTypeId:4, groupName:'ค่าธรรมเนียมวิชาชีพ (Professional fee)', isActive:true },
+    { id:89, groupCode:'PL210A', fsGroupTypeId:4, groupName:'ค่าโฆษณาและค่าใช้จ่ายการตลาด (Advertising Online)', isActive:true },
+    { id:90, groupCode:'PL210B', fsGroupTypeId:4, groupName:'ค่าโฆษณาและค่าใช้จ่ายการตลาด (Advertising Offline)', isActive:true },
+    { id:91, groupCode:'PL210C', fsGroupTypeId:4, groupName:'ค่าโฆษณาและค่าใช้จ่ายการตลาด (Marketing event)', isActive:true },
+    { id:92, groupCode:'PL211',  fsGroupTypeId:4, groupName:'ค่าบำรุงรักษา (Maintenance expenses)', isActive:true },
+    { id:93, groupCode:'PL212',  fsGroupTypeId:4, groupName:'ค่าประกัน (Insurance expenses)', isActive:true },
+    { id:94, groupCode:'PL213',  fsGroupTypeId:4, groupName:'ขาดทุนจากการด้อยค่าทรัพย์สิน (Loss on impairment of assets)', isActive:true },
+    { id:95, groupCode:'PL214',  fsGroupTypeId:4, groupName:'ขาดทุนจากการด้อยค่าทรัพย์สินรอจำหน่าย-รถยึด (Loss on impairment of properties foreclosed)', isActive:true },
+    { id:96, groupCode:'PL217',  fsGroupTypeId:4, groupName:'ขาดทุนจากการขายทรัพย์สินรอจำหน่าย-รถยึด (Loss on disposals of assets foreclosed)', isActive:true },
+    { id:97, groupCode:'PL218',  fsGroupTypeId:4, groupName:'ขาดทุนจากการยึดทรัพย์สินรอการขาย (Loss on Asset Reposess)', isActive:true },
+    { id:98, groupCode:'PL219',  fsGroupTypeId:4, groupName:'ค่าใช้จ่ายอื่น (Other expenses)', isActive:true },
+    { id:99, groupCode:'PL219A', fsGroupTypeId:4, groupName:'ค่าใช้จ่ายบริการคลาวด์และเทคโนโลยี (Cloud and technology service expenses)', isActive:true },
+    { id:100,groupCode:'PL219B', fsGroupTypeId:4, groupName:'ค่าใช้จ่ายอุปกรณ์สำนักงานและวัสดุสิ้นเปลือง (Office equipment & Supply)', isActive:true },
+    { id:101,groupCode:'PL219C', fsGroupTypeId:4, groupName:'ค่าธรรมเนียมศาล (Court fee)', isActive:true },
+    { id:102,groupCode:'PL219D', fsGroupTypeId:4, groupName:'ค่าใช้จ่ายสำหรับผู้จัดการพื้นที่ (Expenses relating to AM)', isActive:true },
+    { id:103,groupCode:'PL219E', fsGroupTypeId:4, groupName:'ขาดทุนจากการขายและตัดจำหน่ายทรัพย์สิน (Loss from disposal and write-off fixed assets)', isActive:true },
+    { id:104,groupCode:'PL220',  fsGroupTypeId:4, groupName:'ขาดทุนจากค่าเผื่อการปรับมูลค่าสินค้าและสินค้าล้าสมัย', isActive:true },
+    { id:105,groupCode:'PL221',  fsGroupTypeId:4, groupName:'Loss Claim-NTB', isActive:true },
+    { id:106,groupCode:'PL222',  fsGroupTypeId:4, groupName:'ค่าใช้จ่ายค่าบริหารจัดการ (Management fee expenses)', isActive:true },
+    { id:107,groupCode:'PL223',  fsGroupTypeId:4, groupName:'เงินปันผลจ่าย (Dividend expenses)', isActive:true },
+    { id:108,groupCode:'PL301',  fsGroupTypeId:4, groupName:'ต้นทุนทางการเงิน (Financial cost)', isActive:true },
+    { id:109,groupCode:'PL401',  fsGroupTypeId:4, groupName:'ค่าใช้จ่ายภาษีเงินได้ (Corporate income tax)', isActive:true },
+    { id:110,groupCode:'PL401A', fsGroupTypeId:4, groupName:'ส่วนเปลี่ยนแปลงจากภาษีเงินได้รอตัดฯ (Change in deferred tax)', isActive:true },
+    { id:111,groupCode:'OCI101', fsGroupTypeId:4, groupName:'Gain(loss) on revaluation/FMV', isActive:true },
+    { id:112,groupCode:'OCI102', fsGroupTypeId:4, groupName:'Income tax relating to OCI', isActive:true },
+    { id:113,groupCode:'OCI201', fsGroupTypeId:4, groupName:'Actuarial Gain/Loss', isActive:true },
+  ];
+
+  let nextId = 114;
+  let fsStatusFilter = 'active';
+  let fsSearchTerm = '';
+  let editingId = null;
+  let isActiveEdit = true;
+
+  // ── Tab switching ──
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  // ── Render table ──
+  function renderTable() {
+    let filtered = [...fsGroups];
+    if (fsStatusFilter === 'active')   filtered = filtered.filter(g => g.isActive !== false);
+    if (fsStatusFilter === 'inactive') filtered = filtered.filter(g => g.isActive === false);
+    if (fsSearchTerm) {
+      const q = fsSearchTerm.toLowerCase();
+      filtered = filtered.filter(g =>
+        g.groupCode.toLowerCase().includes(q) ||
+        g.groupName.toLowerCase().includes(q) ||
+        (FS_TYPES[g.fsGroupTypeId] && FS_TYPES[g.fsGroupTypeId].label.toLowerCase().includes(q))
+      );
+    }
+
+    const tbody = document.getElementById('fsTableBody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5">
+        <div class="empty-state">
+          <div class="empty-icon">📂</div>
+          <p>No FS groups found.</p>
+        </div>
+      </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(g => {
+      const typeInfo = FS_TYPES[g.fsGroupTypeId] || { label: '—', cls: '' };
+      const statusCls = g.isActive !== false ? 'status-active' : 'status-inactive';
+      const statusLabel = g.isActive !== false ? 'Active' : 'Inactive';
+      const rowStyle = g.isActive !== false ? '' : 'opacity:0.7;';
+      return `<tr style="${rowStyle}">
+        <td><span class="mono">${g.groupCode}</span></td>
+        <td>${escHtml(g.groupName)}</td>
+        <td>${typeInfo.label}</td>
+        <td><span class="status-badge ${statusCls}">${statusLabel}</span></td>
+        <td><button class="btn btn-edit btn-sm" onclick="openEditModal(${g.id})">Edit</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Search ──
+  function onFsSearch(val) {
+    fsSearchTerm = val;
+    const clearBtn = document.getElementById('fsSearchClear');
+    if (val) clearBtn.classList.add('visible'); else clearBtn.classList.remove('visible');
+    renderTable();
+  }
+
+  function clearFsSearch() {
+    document.getElementById('fsSearchInput').value = '';
+    document.getElementById('fsSearchClear').classList.remove('visible');
+    fsSearchTerm = '';
+    renderTable();
+  }
+
+  function setFsStatusFilter(val) {
+    fsStatusFilter = val;
+    renderTable();
+  }
+
+  // ── Modal ──
+  function openCreateModal() {
+    editingId = null;
+    document.getElementById('modalTitle').textContent = 'Create New';
+    document.getElementById('modalSubtitle').textContent = 'Fill in the details below to create a new FS Group';
+    document.getElementById('fieldFsNo').value = '';
+    document.getElementById('fieldFsType').value = '';
+    document.getElementById('fieldFsName').value = '';
+    document.getElementById('statusToggleWrap').style.display = 'none';
+    document.getElementById('modalAlertArea').innerHTML = '';
+    document.getElementById('fsModal').classList.add('open');
+  }
+
+  function openEditModal(id) {
+    const g = fsGroups.find(x => x.id === id);
+    if (!g) return;
+    editingId = id;
+    isActiveEdit = g.isActive !== false;
+    document.getElementById('modalTitle').textContent = 'Edit FS Group';
+    document.getElementById('modalSubtitle').textContent = 'Update the details for this FS Group';
+    document.getElementById('fieldFsNo').value = g.groupCode;
+    document.getElementById('fieldFsType').value = String(g.fsGroupTypeId);
+    document.getElementById('fieldFsName').value = g.groupName;
+    document.getElementById('statusToggleWrap').style.display = 'flex';
+    updateToggleUI();
+    document.getElementById('modalAlertArea').innerHTML = '';
+    document.getElementById('fsModal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('fsModal').classList.remove('open');
+  }
+
+  // ── Toggle ──
+  function toggleStatus() {
+    isActiveEdit = !isActiveEdit;
+    updateToggleUI();
+  }
+
+  function updateToggleUI() {
+    const track = document.getElementById('statusToggle');
+    const label = document.getElementById('statusToggleLabel');
+    if (isActiveEdit) {
+      track.className = 'toggle-track on';
+      label.className = 'toggle-label on';
+      label.textContent = 'Active';
+    } else {
+      track.className = 'toggle-track off';
+      label.className = 'toggle-label';
+      label.textContent = 'Inactive';
+    }
+  }
+
+  // ── Save ──
+  function saveGroup() {
+    const fsNo   = document.getElementById('fieldFsNo').value.trim().toUpperCase();
+    const fsType = document.getElementById('fieldFsType').value;
+    const fsName = document.getElementById('fieldFsName').value.trim();
+
+    if (!fsNo || !fsType || !fsName) {
+      showModalAlert('Please fill in all required fields.');
+      return;
+    }
+
+    clearModalAlert();
+
+    if (editingId === null) {
+      // Create
+      const newGroup = {
+        id: nextId++,
+        groupCode: fsNo,
+        fsGroupTypeId: parseInt(fsType),
+        groupName: fsName,
+        isActive: true,
+      };
+      fsGroups.push(newGroup);
+
+      const payload = { groupCode: fsNo, fsGroupTypeId: parseInt(fsType), groupName: fsName };
+      console.log('=== FS GROUP API PAYLOAD ===', JSON.stringify(payload, null, 2));
+
+      closeModal();
+      renderTable();
+      showToast('Create successfully');
+    } else {
+      // Edit
+      const idx = fsGroups.findIndex(g => g.id === editingId);
+      if (idx === -1) return;
+      fsGroups[idx].groupCode = fsNo;
+      fsGroups[idx].fsGroupTypeId = parseInt(fsType);
+      fsGroups[idx].groupName = fsName;
+      fsGroups[idx].isActive = isActiveEdit;
+
+      const payload = { groupCode: fsNo, fsGroupTypeId: parseInt(fsType), groupName: fsName, isActive: isActiveEdit };
+      console.log('=== FS GROUP API PAYLOAD ===', JSON.stringify(payload, null, 2));
+
+      closeModal();
+      renderTable();
+      showToast('Edit successfully');
+    }
+  }
+
+  // ── Modal Alert ──
+  function showModalAlert(msg) {
+    document.getElementById('modalAlertArea').innerHTML = `
+      <div class="alert alert-danger">
+        <span>${msg}</span>
+        <button class="alert-close" onclick="clearModalAlert()">✕</button>
+      </div>`;
+  }
+  function clearModalAlert() {
+    document.getElementById('modalAlertArea').innerHTML = '';
+  }
+
+  // ── Toast ──
+  function showToast(message) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-success';
+    toast.innerHTML = `
+      <div class="toast-icon">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2.5 7L5.5 10L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="toast-body">${message}</div>
+      <button class="toast-close" onclick="dismissToast(this.parentElement)">✕</button>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => dismissToast(toast), 4000);
+  }
+
+  function dismissToast(toast) {
+    if (!toast || !toast.parentElement) return;
+    toast.classList.add('hiding');
+    setTimeout(() => { if (toast.parentElement) toast.parentElement.removeChild(toast); }, 200);
+  }
+
+  // Close modal on backdrop click
+  document.getElementById('fsModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // ── Init ──
+  renderFstTable();
+  renderTable();
+  renderCoaTable();
+</script>
+</body>
+</html>
