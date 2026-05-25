@@ -1282,31 +1282,210 @@ const TARGET_ALGO_MAP = {
 };
 
 let events = [
-  { id: 1,  companyCode: '1000', eventCode: 'BPAY001', eventName: 'รับชำระจากลูกค้า-เงินสด',         isRequiredInternalNo: false, isActive: true,  debitGL: { code: '1211100100', name: 'Short-term Receivables',    type: 'Asset'     }, creditGL: { code: '2212000100', name: 'Long-term Loans',          type: 'Liability' }, referenceFields: [{ id:1, fieldId:1, isMandatory:true,  remark:'Required from lending system' }], debitMappings: [{ refId:1, algoId:1, targetId:1, defaultValue:'1002000000' }], creditMappings: [{ refId:1, algoId:2, targetId:2, defaultValue:'' }] },
-  { id: 2,  companyCode: '1000', eventCode: 'BPAY002', eventName: 'รับชำระจากลูกค้า-โอนเงิน',         isRequiredInternalNo: true,  isActive: true,  debitGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'     }, creditGL: { code: '2211100100', name: 'Accounts Payable',         type: 'Liability' }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 3,  companyCode: '1000', eventCode: 'LOAN001', eventName: 'เบิกเงินกู้ระยะสั้น',               isRequiredInternalNo: true,  isActive: true,  debitGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'     }, creditGL: { code: '2212000100', name: 'Long-term Loans',          type: 'Liability' }, referenceFields: [{ id:2, fieldId:2, isMandatory:true,  remark:'Loan reference number' }],      debitMappings: [], creditMappings: [{ refId:2, algoId:2, targetId:2, defaultValue:'' }] },
-  { id: 4,  companyCode: '1010', eventCode: 'LOAN002', eventName: 'เบิกเงินกู้ระยะยาว',                isRequiredInternalNo: true,  isActive: true,  debitGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'     }, creditGL: { code: '2212000100', name: 'Long-term Loans',          type: 'Liability' }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 5,  companyCode: '1010', eventCode: 'INT001',  eventName: 'รับดอกเบี้ยเงินฝาก',               isRequiredInternalNo: false, isActive: true,  debitGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'     }, creditGL: { code: '4111000100', name: 'Interest Income',          type: 'Revenue'   }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 6,  companyCode: '1010', eventCode: 'INT002',  eventName: 'จ่ายดอกเบี้ยเงินกู้',              isRequiredInternalNo: false, isActive: true,  debitGL: { code: '5120000100', name: 'Interest Expense',          type: 'Expense'   }, creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'    }, referenceFields: [{ id:3, fieldId:3, isMandatory:false, remark:'Interest period ref' }],        debitMappings: [], creditMappings: [] },
-  { id: 7,  companyCode: '1020', eventCode: 'FEE001',  eventName: 'รับค่าธรรมเนียมบริการ',            isRequiredInternalNo: false, isActive: true,  debitGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'     }, creditGL: { code: '4120000100', name: 'Fee Income',               type: 'Revenue'   }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 8,  companyCode: '1020', eventCode: 'FEE002',  eventName: 'จ่ายค่าธรรมเนียมธนาคาร',           isRequiredInternalNo: false, isActive: true,  debitGL: { code: '5130000100', name: 'Administrative Expenses',   type: 'Expense'   }, creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'    }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 9,  companyCode: '1020', eventCode: 'PAY001',  eventName: 'จ่ายเงินเดือนพนักงาน',             isRequiredInternalNo: true,  isActive: true,  debitGL: { code: '5110000100', name: 'Operating Expenses',         type: 'Expense'   }, creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'    }, referenceFields: [{ id:4, fieldId:4, isMandatory:true,  remark:'HR payroll batch ref' }],        debitMappings: [], creditMappings: [] },
-  { id: 10, companyCode: '1030', eventCode: 'PAY002',  eventName: 'จ่ายค่าสาธารณูปโภค',               isRequiredInternalNo: false, isActive: true,  debitGL: { code: '5110000100', name: 'Operating Expenses',         type: 'Expense'   }, creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'    }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 11, companyCode: '1030', eventCode: 'TRF001',  eventName: 'โอนเงินระหว่างบัญชี',              isRequiredInternalNo: true,  isActive: true,  debitGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'     }, creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'    }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 12, companyCode: '1030', eventCode: 'TRF002',  eventName: 'โอนเงินต่างสาขา',                  isRequiredInternalNo: true,  isActive: false, debitGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'     }, creditGL: { code: '2211100100', name: 'Accounts Payable',         type: 'Liability' }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 13, companyCode: '1000', eventCode: 'ADJ001',  eventName: 'ปรับปรุงรายการบัญชี',              isRequiredInternalNo: false, isActive: false, debitGL: { code: '5110000100', name: 'Operating Expenses',         type: 'Expense'   }, creditGL: { code: '2212100100', name: 'Accrued Expenses',         type: 'Liability' }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 14, companyCode: '1010', eventCode: 'REV001',  eventName: 'บันทึกรายได้ค้างรับ',              isRequiredInternalNo: false, isActive: true,  debitGL: { code: '1211100100', name: 'Short-term Receivables',    type: 'Asset'     }, creditGL: { code: '4110000100', name: 'Service Revenue',          type: 'Revenue'   }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 15, companyCode: '1020', eventCode: 'EXP001',  eventName: 'บันทึกค่าใช้จ่ายค้างจ่าย',         isRequiredInternalNo: false, isActive: true,  debitGL: { code: '5130000100', name: 'Administrative Expenses',   type: 'Expense'   }, creditGL: { code: '2212100100', name: 'Accrued Expenses',         type: 'Liability' }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 16, companyCode: '1000', eventCode: 'DEP001',  eventName: 'รับเงินฝากออมทรัพย์',              isRequiredInternalNo: false, isActive: true,  debitGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'     }, creditGL: { code: '2211100100', name: 'Accounts Payable',         type: 'Liability' }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 17, companyCode: '1000', eventCode: 'DEP002',  eventName: 'รับเงินฝากประจำ',                  isRequiredInternalNo: true,  isActive: true,  debitGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'     }, creditGL: { code: '2212000100', name: 'Long-term Loans',          type: 'Liability' }, referenceFields: [{ id:5, fieldId:5, isMandatory:true, remark:'Fixed deposit ref' }], debitMappings: [], creditMappings: [] },
-  { id: 18, companyCode: '1010', eventCode: 'WDR001',  eventName: 'ถอนเงินฝากออมทรัพย์',              isRequiredInternalNo: false, isActive: true,  debitGL: { code: '2211100100', name: 'Accounts Payable',          type: 'Liability' }, creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'    }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 19, companyCode: '1010', eventCode: 'WDR002',  eventName: 'ถอนเงินฝากประจำก่อนกำหนด',          isRequiredInternalNo: true,  isActive: false, debitGL: { code: '2212000100', name: 'Long-term Loans',           type: 'Liability' }, creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'    }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 20, companyCode: '1020', eventCode: 'CHQ001',  eventName: 'จ่ายเช็คธนาคาร',                   isRequiredInternalNo: true,  isActive: true,  debitGL: { code: '2211100100', name: 'Accounts Payable',          type: 'Liability' }, creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'    }, referenceFields: [{ id:6, fieldId:6, isMandatory:true, remark:'Cheque number' }],       debitMappings: [], creditMappings: [] },
-  { id: 21, companyCode: '1020', eventCode: 'CHQ002',  eventName: 'รับเช็คจากลูกค้า',                 isRequiredInternalNo: true,  isActive: true,  debitGL: { code: '1211100100', name: 'Short-term Receivables',    type: 'Asset'     }, creditGL: { code: '4110000100', name: 'Service Revenue',          type: 'Revenue'   }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 22, companyCode: '1030', eventCode: 'TAX001',  eventName: 'บันทึกภาษีหัก ณ ที่จ่าย',          isRequiredInternalNo: false, isActive: true,  debitGL: { code: '5110000100', name: 'Operating Expenses',         type: 'Expense'   }, creditGL: { code: '2212100100', name: 'Accrued Expenses',         type: 'Liability' }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 23, companyCode: '1030', eventCode: 'TAX002',  eventName: 'นำส่งภาษีมูลค่าเพิ่ม',             isRequiredInternalNo: false, isActive: false, debitGL: { code: '2212100100', name: 'Accrued Expenses',          type: 'Liability' }, creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset'    }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 24, companyCode: '1000', eventCode: 'CLR001',  eventName: 'ตัดจำหน่ายหนี้สูญ',                isRequiredInternalNo: false, isActive: true,  debitGL: { code: '5110000100', name: 'Operating Expenses',         type: 'Expense'   }, creditGL: { code: '1211100100', name: 'Short-term Receivables',   type: 'Asset'     }, referenceFields: [], debitMappings: [], creditMappings: [] },
-  { id: 25, companyCode: '1010', eventCode: 'INV001',  eventName: 'บันทึกสินค้าคงคลัง',               isRequiredInternalNo: false, isActive: true,  debitGL: { code: '1212000100', name: 'Inventory',                 type: 'Asset'     }, creditGL: { code: '2211100100', name: 'Accounts Payable',         type: 'Liability' }, referenceFields: [], debitMappings: [], creditMappings: [] },
+
+  // ── Case 1: Ref1 only (mandatory) | Dr=Profit Center fixed value | Cr=Profit Center fixed value | active | auto post ON | require internal OFF
+  { id: 1,  companyCode: '1000', eventCode: 'BPAY001', eventName: 'รับชำระจากลูกค้า-เงินสด',
+    isRequiredInternalNo: false, isAutoPostSAP: true, isActive: true,
+    debitGL:  { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 3 },
+    creditGL: { code: '2212000100', name: 'Long-term Loans',           type: 'Liability', trackingDimensionId: 1, subLedgerTypeId: 3 },
+    referenceFields: [{ id:101, fieldId:1, isMandatory:true, remark:'Transaction ID from lending system' }],
+    debitMappings:  [{ refId:null, algoId:1, targetId:1, defaultValue:'1003000000' }],
+    creditMappings: [{ refId:null, algoId:1, targetId:1, defaultValue:'2001000000' }] },
+
+  // ── Case 2: Ref1+2 (both mandatory) | Dr=Profit Center look up from Branch Code | Cr=no mapping | active | auto post ON | require internal ON
+  { id: 2,  companyCode: '1000', eventCode: 'BPAY002', eventName: 'รับชำระจากลูกค้า-โอนเงิน',
+    isRequiredInternalNo: true, isAutoPostSAP: true, isActive: true,
+    debitGL:  { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 3 },
+    creditGL: { code: '4110000100', name: 'Service Revenue',           type: 'Revenue',   trackingDimensionId: 1, subLedgerTypeId: 3 },
+    referenceFields: [
+      { id:201, fieldId:1, isMandatory:true, remark:'Transaction reference number' },
+      { id:202, fieldId:2, isMandatory:true, remark:'Branch code' }
+    ],
+    debitMappings:  [{ refId:2, algoId:2, targetId:1, defaultValue:'' }],
+    creditMappings: [] },
+
+  // ── Case 3: Ref1+2+3 (Ref1 mandatory, Ref2 mandatory, Ref3 optional) | Dr=Profit Center look up from Contract | Cr=Profit Center look up from Branch Code | active | auto post OFF | require internal OFF
+  { id: 3,  companyCode: '1000', eventCode: 'LOAN001', eventName: 'เบิกเงินกู้ระยะสั้น',
+    isRequiredInternalNo: false, isAutoPostSAP: false, isActive: true,
+    debitGL:  { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 3 },
+    creditGL: { code: '2212000100', name: 'Long-term Loans',           type: 'Liability', trackingDimensionId: 1, subLedgerTypeId: 3 },
+    referenceFields: [
+      { id:301, fieldId:1, isMandatory:true,  remark:'Loan contract number' },
+      { id:302, fieldId:2, isMandatory:true,  remark:'Branch code' },
+      { id:303, fieldId:3, isMandatory:false, remark:'Loan purpose' }
+    ],
+    debitMappings:  [{ refId:1, algoId:4, targetId:1, defaultValue:'' }],
+    creditMappings: [{ refId:2, algoId:2, targetId:1, defaultValue:'' }] },
+
+  // ── Case 4: Ref1+2+3+4 (Ref1 mandatory, Ref2 optional, Ref3 mandatory, Ref4 optional) | Dr=Cost Center look up from Branch Code | Cr=Cost Center fixed value | active | auto post ON | require internal ON
+  { id: 4,  companyCode: '1000', eventCode: 'PAY001', eventName: 'จ่ายเงินเดือนพนักงาน',
+    isRequiredInternalNo: true, isAutoPostSAP: true, isActive: true,
+    debitGL:  { code: '5110000100', name: 'Operating Expenses',  type: 'Expense',   trackingDimensionId: 2, subLedgerTypeId: 3 },
+    creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset', trackingDimensionId: 1, subLedgerTypeId: 3 },
+    referenceFields: [
+      { id:401, fieldId:1, isMandatory:true,  remark:'Payroll batch ID' },
+      { id:402, fieldId:2, isMandatory:false, remark:'Department code' },
+      { id:403, fieldId:3, isMandatory:true,  remark:'Pay period' },
+      { id:404, fieldId:4, isMandatory:false, remark:'Cost center override' }
+    ],
+    debitMappings:  [{ refId:2, algoId:3, targetId:2, defaultValue:'' }],
+    creditMappings: [{ refId:null, algoId:1, targetId:1, defaultValue:'1003000000' }] },
+
+  // ── Case 5: Ref1+2+3+4+5 (all mandatory) | Dr=Cost Center look up from Contract | Cr=Cost Center look up from Contract | active | auto post ON | require internal ON
+  { id: 5,  companyCode: '1000', eventCode: 'TRF001', eventName: 'โอนเงินระหว่างหน่วยงาน',
+    isRequiredInternalNo: true, isAutoPostSAP: true, isActive: true,
+    debitGL:  { code: '5120000100', name: 'Interest Expense',    type: 'Expense',   trackingDimensionId: 2, subLedgerTypeId: 3 },
+    creditGL: { code: '2212100100', name: 'Accrued Expenses',    type: 'Liability', trackingDimensionId: 2, subLedgerTypeId: 3 },
+    referenceFields: [
+      { id:501, fieldId:1, isMandatory:true, remark:'Transfer voucher number' },
+      { id:502, fieldId:2, isMandatory:true, remark:'Source department' },
+      { id:503, fieldId:3, isMandatory:true, remark:'Destination department' },
+      { id:504, fieldId:4, isMandatory:true, remark:'Contract reference' },
+      { id:505, fieldId:5, isMandatory:true, remark:'Approval code' }
+    ],
+    debitMappings:  [{ refId:4, algoId:5, targetId:2, defaultValue:'' }],
+    creditMappings: [{ refId:4, algoId:5, targetId:2, defaultValue:'' }] },
+
+  // ── Case 6: Ref1+2 (Ref1 mandatory, Ref2 optional) | Dr=Profit Center + Customer subledger (both fixed value) | Cr=no mapping | active | auto post ON | require internal OFF
+  { id: 6,  companyCode: '1010', eventCode: 'RCV001', eventName: 'บันทึกลูกหนี้การค้า',
+    isRequiredInternalNo: false, isAutoPostSAP: true, isActive: true,
+    debitGL:  { code: '1211100100', name: 'Short-term Receivables', type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 1 },
+    creditGL: { code: '4110000100', name: 'Service Revenue',        type: 'Revenue',   trackingDimensionId: 1, subLedgerTypeId: 3 },
+    referenceFields: [
+      { id:601, fieldId:1, isMandatory:true,  remark:'Invoice number' },
+      { id:602, fieldId:2, isMandatory:false, remark:'Customer account' }
+    ],
+    debitMappings:  [
+      { refId:null, algoId:1, targetId:1, defaultValue:'1003000000' },
+      { refId:null, algoId:1, targetId:3, defaultValue:'C001000' }
+    ],
+    creditMappings: [{ refId:null, algoId:1, targetId:1, defaultValue:'1003000000' }] },
+
+  // ── Case 7: Ref1+2+3 (all mandatory) | Dr=Profit Center look up from Branch Code + Customer subledger fixed value | Cr=Profit Center fixed value | active | auto post ON | require internal OFF
+  { id: 7,  companyCode: '1010', eventCode: 'RCV002', eventName: 'บันทึกลูกหนี้สัญญาเช่า',
+    isRequiredInternalNo: false, isAutoPostSAP: true, isActive: true,
+    debitGL:  { code: '1211100200', name: 'Trade Receivables',         type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 1 },
+    creditGL: { code: '4120000100', name: 'Fee Income',                type: 'Revenue',   trackingDimensionId: 1, subLedgerTypeId: 3 },
+    referenceFields: [
+      { id:701, fieldId:1, isMandatory:true, remark:'Contract number' },
+      { id:702, fieldId:2, isMandatory:true, remark:'Branch code' },
+      { id:703, fieldId:3, isMandatory:true, remark:'Customer code' }
+    ],
+    debitMappings:  [
+      { refId:2, algoId:2, targetId:1, defaultValue:'' },
+      { refId:null, algoId:1, targetId:3, defaultValue:'C002000' }
+    ],
+    creditMappings: [{ refId:null, algoId:1, targetId:1, defaultValue:'1003000000' }] },
+
+  // ── Case 8: Ref1+2 (both mandatory) | Dr=Profit Center + Vendor subledger (both fixed value) | Cr=no mapping | active | auto post OFF | require internal OFF
+  { id: 8,  companyCode: '1010', eventCode: 'PAY002', eventName: 'บันทึกเจ้าหนี้การค้า',
+    isRequiredInternalNo: false, isAutoPostSAP: false, isActive: true,
+    debitGL:  { code: '5130000100', name: 'Administrative Expenses', type: 'Expense',   trackingDimensionId: 2, subLedgerTypeId: 3 },
+    creditGL: { code: '2211100100', name: 'Accounts Payable',        type: 'Liability', trackingDimensionId: 1, subLedgerTypeId: 2 },
+    referenceFields: [
+      { id:801, fieldId:1, isMandatory:true, remark:'Purchase order number' },
+      { id:802, fieldId:2, isMandatory:true, remark:'Vendor code' }
+    ],
+    debitMappings:  [{ refId:null, algoId:1, targetId:2, defaultValue:'2002000000' }],
+    creditMappings: [
+      { refId:null, algoId:1, targetId:1, defaultValue:'1003000000' },
+      { refId:null, algoId:1, targetId:4, defaultValue:'V001000' }
+    ] },
+
+  // ── Case 9: Ref1+2+3 (Ref1 mandatory, Ref2 optional, Ref3 optional) | Dr=Cost Center look up from Branch Code | Cr=Profit Center + Vendor subledger fixed value | active | auto post ON | require internal OFF
+  { id: 9,  companyCode: '1020', eventCode: 'FEE001', eventName: 'รับค่าธรรมเนียมบริการ',
+    isRequiredInternalNo: false, isAutoPostSAP: true, isActive: true,
+    debitGL:  { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 3 },
+    creditGL: { code: '2211100100', name: 'Accounts Payable',          type: 'Liability', trackingDimensionId: 1, subLedgerTypeId: 2 },
+    referenceFields: [
+      { id:901, fieldId:1, isMandatory:true,  remark:'Fee transaction ID' },
+      { id:902, fieldId:2, isMandatory:false, remark:'Branch code' },
+      { id:903, fieldId:3, isMandatory:false, remark:'Service type' }
+    ],
+    debitMappings:  [{ refId:null, algoId:1, targetId:1, defaultValue:'1003000000' }],
+    creditMappings: [
+      { refId:null, algoId:1, targetId:1, defaultValue:'1003000000' },
+      { refId:null, algoId:1, targetId:4, defaultValue:'V002000' }
+    ] },
+
+  // ── Case 10: Ref1+2+3+4 (all optional except Ref1) | Dr=no mapping | Cr=no mapping | active | auto post ON | require internal OFF
+  { id: 10, companyCode: '1020', eventCode: 'ADJ001', eventName: 'ปรับปรุงรายการบัญชี',
+    isRequiredInternalNo: false, isAutoPostSAP: true, isActive: true,
+    debitGL:  { code: '5110000100', name: 'Operating Expenses',  type: 'Expense',   trackingDimensionId: 2, subLedgerTypeId: 3 },
+    creditGL: { code: '2212100100', name: 'Accrued Expenses',    type: 'Liability', trackingDimensionId: 2, subLedgerTypeId: 3 },
+    referenceFields: [
+      { id:1001, fieldId:1, isMandatory:true,  remark:'Adjustment voucher number' },
+      { id:1002, fieldId:2, isMandatory:false, remark:'Original document ref' },
+      { id:1003, fieldId:3, isMandatory:false, remark:'Reason code' },
+      { id:1004, fieldId:4, isMandatory:false, remark:'Approver ID' }
+    ],
+    debitMappings:  [],
+    creditMappings: [] },
+
+  // ── Case 11: Ref1 only | Dr=Cost Center fixed value | Cr=no mapping | inactive | auto post OFF | require internal OFF
+  { id: 11, companyCode: '1020', eventCode: 'EXP001', eventName: 'บันทึกค่าใช้จ่ายค้างจ่าย',
+    isRequiredInternalNo: false, isAutoPostSAP: false, isActive: false,
+    debitGL:  { code: '5130000100', name: 'Administrative Expenses', type: 'Expense',   trackingDimensionId: 2, subLedgerTypeId: 3 },
+    creditGL: { code: '2212100100', name: 'Accrued Expenses',        type: 'Liability', trackingDimensionId: 2, subLedgerTypeId: 3 },
+    referenceFields: [
+      { id:1101, fieldId:1, isMandatory:true, remark:'Expense document number' }
+    ],
+    debitMappings:  [{ refId:null, algoId:1, targetId:2, defaultValue:'2003000000' }],
+    creditMappings: [] },
+
+  // ── Case 12: Ref1+2 (Ref1 mandatory, Ref2 mandatory) | Dr=Inventory (Cost Center) look up from Contract | Cr=Accounts Payable (Profit Center + Vendor) fixed value | active | auto post ON | require internal ON
+  { id: 12, companyCode: '1020', eventCode: 'INV001', eventName: 'รับสินค้าเข้าคลัง',
+    isRequiredInternalNo: true, isAutoPostSAP: true, isActive: true,
+    debitGL:  { code: '1212000100', name: 'Inventory',        type: 'Asset',     trackingDimensionId: 2, subLedgerTypeId: 3 },
+    creditGL: { code: '2211100100', name: 'Accounts Payable', type: 'Liability', trackingDimensionId: 1, subLedgerTypeId: 2 },
+    referenceFields: [
+      { id:1201, fieldId:1, isMandatory:true, remark:'Purchase order number' },
+      { id:1202, fieldId:2, isMandatory:true, remark:'Contract number' }
+    ],
+    debitMappings:  [{ refId:2, algoId:5, targetId:2, defaultValue:'' }],
+    creditMappings: [
+      { refId:null, algoId:1, targetId:1, defaultValue:'1003000000' },
+      { refId:null, algoId:1, targetId:4, defaultValue:'V003000' }
+    ] },
+
+  // ── Case 13: Ref1+2+3+4+5 (Ref1 mandatory, Ref2–Ref5 optional) | Dr=no mapping | Cr=no mapping | inactive | auto post OFF | require internal OFF
+  { id: 13, companyCode: '1030', eventCode: 'CLR001', eventName: 'ตัดจำหน่ายหนี้สูญ',
+    isRequiredInternalNo: false, isAutoPostSAP: false, isActive: false,
+    debitGL:  { code: '5110000100', name: 'Operating Expenses',        type: 'Expense', trackingDimensionId: 2, subLedgerTypeId: 3 },
+    creditGL: { code: '1211100100', name: 'Short-term Receivables',    type: 'Asset',   trackingDimensionId: 1, subLedgerTypeId: 1 },
+    referenceFields: [
+      { id:1301, fieldId:1, isMandatory:true,  remark:'Write-off approval number' },
+      { id:1302, fieldId:2, isMandatory:false, remark:'Original invoice number' },
+      { id:1303, fieldId:3, isMandatory:false, remark:'Customer code' },
+      { id:1304, fieldId:4, isMandatory:false, remark:'Write-off reason' },
+      { id:1305, fieldId:5, isMandatory:false, remark:'Legal case reference' }
+    ],
+    debitMappings:  [],
+    creditMappings: [] },
+
+  // ── Case 14: Ref1+2+3 (Ref1 mandatory, Ref2 mandatory, Ref3 optional) | Dr=Profit Center look up from Branch Code | Cr=Profit Center look up from Contract | active | auto post ON | require internal ON
+  { id: 14, companyCode: '1030', eventCode: 'LOAN001', eventName: 'เบิกเงินกู้ระยะยาว',
+    isRequiredInternalNo: true, isAutoPostSAP: true, isActive: true,
+    debitGL:  { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 3 },
+    creditGL: { code: '2212000100', name: 'Long-term Loans',           type: 'Liability', trackingDimensionId: 1, subLedgerTypeId: 3 },
+    referenceFields: [
+      { id:1401, fieldId:1, isMandatory:true,  remark:'Loan application number' },
+      { id:1402, fieldId:2, isMandatory:true,  remark:'Branch code' },
+      { id:1403, fieldId:3, isMandatory:false, remark:'Collateral reference' }
+    ],
+    debitMappings:  [{ refId:2, algoId:2, targetId:1, defaultValue:'' }],
+    creditMappings: [{ refId:1, algoId:4, targetId:1, defaultValue:'' }] },
+
+  // ── Case 15: Ref1 only | Dr=no mapping | Cr=no mapping | inactive | auto post OFF | require internal ON
+  { id: 15, companyCode: '1030', eventCode: 'TAX001', eventName: 'นำส่งภาษีมูลค่าเพิ่ม',
+    isRequiredInternalNo: true, isAutoPostSAP: false, isActive: false,
+    debitGL:  { code: '2212100100', name: 'Accrued Expenses',          type: 'Liability', trackingDimensionId: 2, subLedgerTypeId: 3 },
+    creditGL: { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 3 },
+    referenceFields: [
+      { id:1501, fieldId:1, isMandatory:true, remark:'Tax filing reference number' }
+    ],
+    debitMappings:  [],
+    creditMappings: [] },
 ];
 
 // ════════════════════════════════════════════
@@ -1389,6 +1568,7 @@ function exportEvents() {
     'Reference3','ref3 remark',
     'Reference4','ref4 remark',
     'Reference5','ref5 remark',
+    'is_auto_post','require_internal_no',
   ];
 
   const rows = filtered.map(ev => {
@@ -1400,14 +1580,15 @@ function exportEvents() {
     const getLogicLabel = (m) => {
       if (!m || !m.algoId) return '';
       if (m.algoId === 1) return 'Fixed value';
-      if (m.algoId === 2 || m.algoId === 3) return 'Look up from ref';
-      if (m.algoId === 4 || m.algoId === 5) return 'Look up from Branch contract';
+      if (m.algoId === 2 || m.algoId === 3) return 'Look up from Branch Code';
+      if (m.algoId === 4 || m.algoId === 5) return 'Look up from Contract';
+
       return '';
     };
     const getLogicValue = (m) => {
       if (!m || !m.algoId) return '';
       if (m.algoId === 1) return m.defaultValue || '';
-      if (m.algoId === 2 || m.algoId === 3) return m.refId ? `Ref${m.refId}` : '';
+      if (m.algoId === 2 || m.algoId === 3 || m.algoId === 4 || m.algoId === 5) return m.refId ? `Ref${m.refId}` : '';
       return '';
     };
 
@@ -1415,7 +1596,7 @@ function exportEvents() {
     (ev.referenceFields || []).forEach(rf => { refs[rf.fieldId] = rf; });
     const getRefStatus = (n) => {
       const rf = refs[n];
-      if (!rf) return 'Null';
+      if (!rf) return '';
       return rf.isMandatory ? 'Required' : 'Optional';
     };
 
@@ -1429,6 +1610,8 @@ function exportEvents() {
       getRefStatus(3), refs[3]?.remark || '',
       getRefStatus(4), refs[4]?.remark || '',
       getRefStatus(5), refs[5]?.remark || '',
+      ev.isAutoPostSAP !== false ? 'TRUE' : 'FALSE',
+      ev.isRequiredInternalNo ? 'TRUE' : 'FALSE',
     ].map(v => `"${String(v).replace(/"/g, '""')}"`);
   });
 
@@ -2188,15 +2371,17 @@ const HEADER_MAP = {
   'ref4 remark': 'ref4_remark',
   'reference5': 'reference5',
   'ref5 remark': 'ref5_remark',
+  'is_auto_post': 'is_auto_post',
+  'require_internal_no': 'require_internal_no',
 };
 const REQUIRED_UPLOAD_COLS = Object.keys(HEADER_MAP);
 
 const VALID_UPLOAD_COMPANIES = ['1000','1010','1020','1030'];
-const VALID_ALGO_STRINGS     = ['look up from ref', 'look up from branch contract', 'fixed value'];
-const VALID_REF_NAMES        = ['ref1','ref2','ref3','ref4','ref5'];
-const VALID_REF_STATUS       = ['required','optional','null'];
+const VALID_ALGO_STRINGS     = ['fixed value', 'look up from branch code', 'look up from contract'];
+const VALID_REF_NAMES        = ['ref1','ref2','ref3','ref4','ref5','ref6'];
+const VALID_REF_STATUS       = ['required','optional','null',''];
 
-const REF_LABEL_TO_ID = { 'ref1':1, 'ref2':2, 'ref3':3, 'ref4':4, 'ref5':5 };
+const REF_LABEL_TO_ID = { 'ref1':1, 'ref2':2, 'ref3':3, 'ref4':4, 'ref5':5, 'ref6':6 };
 
 let uploadParsedData = null;
 let uploadValidRows = [];
@@ -2331,14 +2516,14 @@ function runUploadValidation() {
       if (!logic) return; // optional
       const algoL = logic.toLowerCase();
       if (!VALID_ALGO_STRINGS.includes(algoL)) {
-        errors.push(`Logic ${side.toUpperCase()} "${logic}" is invalid (use: Look up from ref / Look up from Branch contract / Fixed value)`);
+        errors.push(`Logic ${side.toUpperCase()} "${logic}" is invalid (use: Fixed value / Look up from Branch Code / Look up from Contract)`);
       } else if (algoL === 'fixed value' && !value) {
         errors.push(`${side.toUpperCase()} value is required when Logic is "Fixed value"`);
-      } else if (algoL === 'look up from ref') {
+      } else if (algoL === 'look up from branch code' || algoL === 'look up from contract') {
         if (!value) {
-          errors.push(`${side.toUpperCase()} value (reference field) is required when Logic is "Look up from ref"`);
+          errors.push(`${side.toUpperCase()} value (reference field) is required when Logic is "${logic}"`);
         } else if (!VALID_REF_NAMES.includes(value.toLowerCase())) {
-          errors.push(`${side.toUpperCase()} value "${value}" is invalid (use Ref1–Ref5)`);
+          errors.push(`${side.toUpperCase()} value "${value}" is invalid (use Ref1–Ref6)`);
         }
       }
     });
@@ -2346,11 +2531,27 @@ function runUploadValidation() {
     // ref1 remark is required
     if (!row.ref1_remark) errors.push('ref1 remark is required');
 
-    // ref2–ref5 status
+    // is_auto_post and require_internal_no are mandatory TRUE/FALSE
+    const validBool = ['true','false'];
+    if (!row.is_auto_post) {
+      errors.push('is_auto_post is required (TRUE or FALSE)');
+    } else if (!validBool.includes(row.is_auto_post.toLowerCase())) {
+      errors.push(`is_auto_post "${row.is_auto_post}" is invalid (use TRUE or FALSE)`);
+    }
+    if (!row.require_internal_no) {
+      errors.push('require_internal_no is required (TRUE or FALSE)');
+    } else if (!validBool.includes(row.require_internal_no.toLowerCase())) {
+      errors.push(`require_internal_no "${row.require_internal_no}" is invalid (use TRUE or FALSE)`);
+    }
+
+    // ref2–ref5 status + remark required when status is set
     [2,3,4,5].forEach(n => {
       const status = (row[`reference${n}`] || '').toLowerCase();
       if (status && !VALID_REF_STATUS.includes(status)) {
-        errors.push(`Reference${n} "${row[`reference${n}`]}" is invalid (use Required/Optional/Null)`);
+        errors.push(`Reference${n} "${row[`reference${n}`]}" is invalid (use Required/Optional or leave empty)`);
+      }
+      if ((status === 'required' || status === 'optional') && !row[`ref${n}_remark`]) {
+        errors.push(`ref${n} remark is required when Reference${n} is "${row[`reference${n}`]}"`);
       }
     });
 
@@ -2427,8 +2628,8 @@ function runUploadValidation() {
   const fmtRefN = (row, n) => {
     const status = (row[`reference${n}`] || '').toLowerCase();
     const remark = row[`ref${n}_remark`] || '';
-    if (!status || status === 'null')
-      return '<span style="color:var(--text-secondary);font-size:10px;">Null</span>';
+    if (!status || status === 'null' || status === '')
+      return '<span style="color:var(--text-secondary);font-size:10px;">—</span>';
     const label = status === 'required'
       ? '<span style="font-size:10px;font-weight:700;color:#065F46;">Required</span>'
       : '<span style="font-size:10px;color:var(--text-secondary);">Optional</span>';
@@ -2451,15 +2652,17 @@ function runUploadValidation() {
             <th style="width:160px;">Event Name</th>
             <th style="width:140px;">Dr GL</th>
             <th style="width:140px;">Cr GL</th>
-            <th style="width:150px;">Logic Dr</th>
-            <th style="width:150px;">Logic Cr</th>
+            <th style="width:150px;">Logic Dr.Profit center / cost center</th>
+            <th style="width:150px;">Logic Cr.Profit center / cost center</th>
             <th style="width:110px;">Dr Sub-Ledger</th>
             <th style="width:110px;">Cr Sub-Ledger</th>
-            <th style="width:120px;">Ref1 Remark</th>
+            <th style="width:120px;">Ref1</th>
             <th style="width:110px;">Ref2</th>
             <th style="width:110px;">Ref3</th>
             <th style="width:110px;">Ref4</th>
             <th style="width:110px;">Ref5</th>
+            <th style="width:90px;">Auto Post</th>
+            <th style="width:110px;">Require Internal No</th>
             <th style="min-width:200px;">Issues</th>
           </tr>
         </thead>
@@ -2479,11 +2682,15 @@ function runUploadValidation() {
               <td>${fmtLogic(r.row.logic_cr, r.row.cr_value)}</td>
               <td><span style="font-size:11px;">${r.row.dr_sub_ledger || '—'}</span></td>
               <td><span style="font-size:11px;">${r.row.cr_sub_ledger || '—'}</span></td>
-              <td style="font-size:11px;">${r.row.ref1_remark || '—'}</td>
+              <td>${r.row.ref1_remark
+                ? `<span style="font-size:10px;font-weight:700;color:#065F46;">Required</span><div style="font-size:10px;color:var(--text-primary);margin-top:2px;">${r.row.ref1_remark}</div>`
+                : '<span style="color:var(--text-secondary);font-size:10px;">—</span>'}</td>
               <td>${fmtRefN(r.row, 2)}</td>
               <td>${fmtRefN(r.row, 3)}</td>
               <td>${fmtRefN(r.row, 4)}</td>
               <td>${fmtRefN(r.row, 5)}</td>
+              <td style="font-size:11px;">${r.row.is_auto_post || '—'}</td>
+              <td style="font-size:11px;">${r.row.require_internal_no || '—'}</td>
               <td>${r.errors.length > 0
                 ? `<ul class="upload-error-list">${r.errors.map(e => `<li>${e}</li>`).join('')}</ul>`
                 : '<span style="color:#065F46;font-size:11px;">—</span>'}</td>
@@ -2528,11 +2735,12 @@ function buildMappingsFromRow(row, gl, side) {
     let algoId = null, refId = null, defaultValue = '';
     if (algoL === 'fixed value') {
       algoId = 1; defaultValue = value || '';
-    } else if (algoL === 'look up from ref') {
+    } else if (algoL === 'look up from branch code') {
       algoId = targetAttr.id === 1 ? 2 : 3;
       refId  = REF_LABEL_TO_ID[(value || '').toLowerCase()] || null;
-    } else if (algoL === 'look up from branch contract') {
+    } else if (algoL === 'look up from contract') {
       algoId = targetAttr.id === 1 ? 4 : 5;
+      refId  = REF_LABEL_TO_ID[(value || '').toLowerCase()] || null;
     }
     if (algoId) mappings.push({ refId, algoId, targetId: targetAttr.id, defaultValue });
   }
@@ -2571,8 +2779,8 @@ function confirmUpload() {
       companyCode:         row.entity,
       eventCode:           row.event_code.toUpperCase(),
       eventName:           row.event_name,
-      isRequiredInternalNo: false,
-      isAutoPostSAP:        false,
+      isRequiredInternalNo: row.require_internal_no.toUpperCase() === 'TRUE',
+      isAutoPostSAP:        row.is_auto_post.toUpperCase() === 'TRUE',
       isActive:             true,
       debitGL,
       creditGL,

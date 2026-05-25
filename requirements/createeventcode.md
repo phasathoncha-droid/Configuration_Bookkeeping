@@ -81,7 +81,7 @@ Single modal used for both create and edit. Title changes accordingly.
 [ Company Code ▼ ]
 [ Event Code        ]  [ Event Name                          ]
 ─── Reference Fields ───────────────────────────────────────
-[ Ref1 ] [ Ref2 ] [ Ref3 ] [ Ref4 ] [ Ref5 ]    (chip toggles)
+[ Reference1 ] [ Reference2 ] [ Reference3 ] [ Reference4 ] [ Reference5 ] [ Reference6 ]  (chip toggles)
 ─── config rows for active chips ───────────────────────────
 ┌─────────────────────────────────────────────────────────┐
 │  Require Internal Reference Number     [ toggle OFF ]   │
@@ -112,13 +112,13 @@ Single modal used for both create and edit. Title changes accordingly.
 
 **Reference Fields (chip toggles inside Layer 1):**
 
-- Six chips displayed: **Ref1 Ref2 Ref3 Ref4 Ref5** (Ref6 is always implicitly active but not shown as a chip)
-- **Ref1** is always active (blue, non-deselectable) and always mandatory
-- **Ref2–Ref5** are toggleable by user — click to activate/deactivate
+- Six chips displayed: **Reference1 Reference2 Reference3 Reference4 Reference5 Reference6**
+- **Reference1** and **Reference6** are always active (blue, non-deselectable) and always mandatory
+- **Reference2–Reference5** are toggleable by user — click to activate/deactivate
 - Each active reference chip shows a config row below with:
   - Remark (text input)
   - Mandatory / Optional dropdown — default **Mandatory**
-- Ref1's mandatory dropdown is disabled (locked to Mandatory)
+- Reference1 and Reference6 mandatory dropdowns are disabled (locked to Mandatory)
 - Empty state when no optional refs activated: config area shows nothing extra
 
 ### Layer 2 — Debit Card
@@ -174,10 +174,10 @@ Target attribute configurations and reference fields are **not validated** — z
 
 ## Success Messages
 
-After saving, a green banner appears on the page (auto-dismisses after 6 seconds):
+After saving, a green toast appears on the page (auto-dismisses after 4 seconds):
 
-- Create: `Event "[EventName]" created successfully!` + GL codes
-- Edit: `Event "[EventName]" updated successfully!` + GL codes
+- Create: `Create successfully`
+- Edit: `Edit successfully`
 
 ---
 
@@ -192,7 +192,7 @@ Logged to browser console on every save with prefix `=== EVENT API PAYLOAD ===`.
   "eventCode": "BPAY001",
   "eventName": "รับชำระจากลูกค้า-เงินสด",
   "isRequiredInternalNo": false,
-  "autoPostToSAP": true,
+  "isAutoPostSAP": true,
   "isActive": true,
   "eventReferenceDetail": [
     {
@@ -238,79 +238,85 @@ Logged to browser console on every save with prefix `=== EVENT API PAYLOAD ===`.
 ## Bulk Upload
 
 ### Overview
-Users can bulk-create events by uploading a tab-separated file (TSV). This is designed for new company onboarding scenarios where many events need to be created at once.
+Users can bulk-create events by uploading a tab-separated (TSV) or comma-separated (CSV) file. This is designed for new company onboarding scenarios where many events need to be created at once.
 
 ### File Format
-Tab-separated values (TSV). First row is the header. Compatible with Google Sheets copy-paste.
+- Tab-separated (TSV) or comma-separated (CSV)
+- First row = header row
+- All column headers are case-insensitive
+- Compatible with Google Sheets copy-paste
 
 ### Column Definitions
 
-| Column | Type | Required | Description |
-|--------|------|----------|-------------|
-| `company_code` | String | Yes | One of: 1000, 1010, 1020, 1030 |
-| `event_code` | String | Yes | Max 10 chars, uppercase |
-| `event_name` | String | Yes | Event description |
-| `require_internal_number` | Boolean | Yes | TRUE / FALSE |
-| `auto_post_to_sap` | Boolean | Yes | TRUE / FALSE |
-| `gl_debit_code` | String (10-digit) | Yes | GL account code for debit side |
-| `gl_credit_code` | String (10-digit) | Yes | GL account code for credit side |
-| `ref1_active` | Boolean | Yes | Always TRUE (Ref1 is mandatory) |
-| `ref1_mandatory` | Boolean | Yes | Always TRUE (Ref1 is always mandatory) |
-| `ref1_remark` | String | Yes | Description/label for Ref1 field |
-| `ref2_active` | Boolean | Yes | TRUE to activate Ref2 |
-| `ref2_mandatory` | Boolean | Yes | TRUE = Mandatory, FALSE = Optional |
-| `ref2_remark` | String | No | Description/label for Ref2 field |
-| `ref3_active` | Boolean | Yes | TRUE to activate Ref3 |
-| `ref3_mandatory` | Boolean | Yes | TRUE = Mandatory, FALSE = Optional |
-| `ref3_remark` | String | No | Description/label for Ref3 field |
-| `ref4_active` | Boolean | Yes | TRUE to activate Ref4 |
-| `ref4_mandatory` | Boolean | Yes | TRUE = Mandatory, FALSE = Optional |
-| `ref4_remark` | String | No | Description/label for Ref4 field |
-| `ref5_active` | Boolean | Yes | TRUE to activate Ref5 |
-| `ref5_mandatory` | Boolean | Yes | TRUE = Mandatory, FALSE = Optional |
-| `ref5_remark` | String | No | Description/label for Ref5 field |
-| `profit_center_algorithm` | String | No | See Algorithm Values table below |
-| `profit_center_lookup_field` | String | No | `Ref1`–`Ref5` (only when algorithm is Look Up) |
-| `profit_center_fixed_value` | String | No | Fixed value string (only when algorithm = Fixed Value) |
-| `cost_center_algorithm` | String | No | See Algorithm Values table below |
-| `cost_center_lookup_field` | String | No | `Ref1`–`Ref5` (only when algorithm is Look Up) |
-| `cost_center_fixed_value` | String | No | Fixed value string (only when algorithm = Fixed Value) |
-| `customer_algorithm` | String | No | `Fixed Value` only |
-| `customer_lookup_field` | String | No | Not applicable for Customer |
-| `customer_fixed_value` | String | No | Fixed value string |
-| `vendor_algorithm` | String | No | `Fixed Value` only |
-| `vendor_lookup_field` | String | No | Not applicable for Vendor |
-| `vendor_fixed_value` | String | No | Fixed value string |
+| No | Column Header | Type | Required | Value | Notes |
+|----|--------------|------|----------|-------|-------|
+| 1 | `Event code` | String | Yes | Text, max 10 chars, uppercase | |
+| 2 | `Entity` | String | Yes | `1000` / `1010` / `1020` / `1030` | Company code |
+| 3 | `Event Name` | String | Yes | Free text (Thai / English) | |
+| 4 | `Dr Account Number` | String (10-digit) | Yes | e.g. `1211100100` | Must exist in GL master |
+| 5 | `Cr Account Number` | String (10-digit) | Yes | e.g. `2212000100` | Must exist in GL master |
+| 6 | `Logic Dr.Profit center / cost center` | String | No | `Fixed value` / `Look up from Branch Code` / `Look up from Contract` | Leave empty if no mapping |
+| 7 | `Dr. Profit center / cost center value` | String | Conditional | Fixed: any string / Look up: `Ref1`–`Ref6` | Required if column 6 is filled |
+| 8 | `Dr. Sub ledger Value` | String | No | Any string | Used when GL has Customer/Vendor subledger |
+| 9 | `Logic Cr.Profit center / cost center` | String | No | `Fixed value` / `Look up from Branch Code` / `Look up from Contract` | Leave empty if no mapping |
+| 10 | `Cr. Profit center / cost center value` | String | Conditional | Fixed: any string / Look up: `Ref1`–`Ref6` | Required if column 9 is filled |
+| 11 | `Cr. Sub ledger Value` | String | No | Any string | Used when GL has Customer/Vendor subledger |
+| 12 | `ref1 remark` | String | Yes | Free text | Ref1 is always active and mandatory |
+| 13 | `Reference2` | String | No | `Required` / `Optional` / *(empty)* | Empty = Ref2 not configured |
+| 14 | `ref2 remark` | String | Conditional | Free text | Required if `Reference2` is `Required` or `Optional` |
+| 15 | `Reference3` | String | No | `Required` / `Optional` / *(empty)* | Empty = Ref3 not configured |
+| 16 | `ref3 remark` | String | Conditional | Free text | Required if `Reference3` is `Required` or `Optional` |
+| 17 | `Reference4` | String | No | `Required` / `Optional` / *(empty)* | Empty = Ref4 not configured |
+| 18 | `ref4 remark` | String | Conditional | Free text | Required if `Reference4` is `Required` or `Optional` |
+| 19 | `Reference5` | String | No | `Required` / `Optional` / *(empty)* | Empty = Ref5 not configured |
+| 20 | `ref5 remark` | String | Conditional | Free text | Required if `Reference5` is `Required` or `Optional` |
+| 21 | `is_auto_post` | Boolean | Yes | `TRUE` / `FALSE` | |
+| 22 | `require_internal_no` | Boolean | Yes | `TRUE` / `FALSE` | |
 
-### Algorithm Values (upload file strings → system algorithm IDs)
+### Logic Value Reference
 
-| File Value | Algorithm ID | Description |
-|------------|-------------|-------------|
-| `Fixed Value` | 1 | Use a hardcoded fixed value |
-| `Lookup PC Branch` | 2 | Look Up Profit Center by Branch Code |
-| `Lookup CC Branch` | 3 | Look Up Cost Center by Branch Code |
-| `Lookup PC Contract` | 4 | Look Up Profit Center by Contract Number |
-| `Lookup CC Contract` | 5 | Look Up Cost Center by Contract Number |
+| Value in file | Meaning |
+|---------------|---------|
+| `Fixed value` | Use a hardcoded fixed value — fill the value column with any string |
+| `Look up from Branch Code` | Derive from branch code lookup — fill the value column with `Ref1`–`Ref6` |
+| `Look up from Contract` | Derive from contract number lookup — fill the value column with `Ref1`–`Ref6` |
 
-### Example Upload Data (5 rows)
+### Example Upload Data
 
 ```
-company_code	event_code	event_name	require_internal_number	auto_post_to_sap	gl_debit_code	gl_credit_code	ref1_active	ref1_mandatory	ref1_remark	ref2_active	ref2_mandatory	ref2_remark	ref3_active	ref3_mandatory	ref3_remark	ref4_active	ref4_mandatory	ref4_remark	ref5_active	ref5_mandatory	ref5_remark	profit_center_algorithm	profit_center_lookup_field	profit_center_fixed_value	cost_center_algorithm	cost_center_lookup_field	cost_center_fixed_value	customer_algorithm	customer_lookup_field	customer_fixed_value	vendor_algorithm	vendor_lookup_field	vendor_fixed_value
-1000	BPAY001	Cash Payment from Customer	TRUE	TRUE	1211100100	2212000100	TRUE	TRUE	Transaction ID from lending system	TRUE	TRUE	Loan contract ref	FALSE	FALSE		FALSE	FALSE		FALSE	FALSE		Lookup PC Branch	Ref2					Fixed Value		1020			
-1000	INT001	Interest Income from Deposit	FALSE	TRUE	1211200100	4111000100	TRUE	TRUE	Deposit account ref	FALSE	FALSE		FALSE	FALSE		FALSE	FALSE		FALSE	FALSE		Lookup PC Branch	Ref1								Fixed Value		1000
-1000	PAY001	Payroll Payment	TRUE	FALSE	5110000100	1211200100	TRUE	TRUE	Payroll batch ref	TRUE	FALSE	HR payroll batch	FALSE	FALSE		FALSE	FALSE		FALSE	FALSE					Lookup CC Branch	Ref1					Fixed Value		201100
-1000	TRF001	Internal Account Transfer	TRUE	TRUE	1211200100	1211200100	TRUE	TRUE	Transfer voucher ref	TRUE	TRUE	Source account ref	TRUE	TRUE	Destination account ref	FALSE	FALSE		FALSE	FALSE		Lookup PC Contract	Ref2					Fixed Value		1000			
-1000	FEE002	Bank Charge Payment	FALSE	FALSE	5130000100	1211200100	TRUE	TRUE	Bank charge ref	FALSE	FALSE		FALSE	FALSE		FALSE	FALSE		FALSE	FALSE		Fixed Value		1003000000	Fixed Value		1002000				Fixed Value		3100
+Event code	Entity	Event Name	Dr Account Number	Cr Account Number	Logic Dr.Profit center / cost center	Dr. Profit center / cost center value	Dr. Sub ledger Value	Logic Cr.Profit center / cost center	Cr. Profit center / cost center value	Cr. Sub ledger Value	ref1 remark	Reference2	ref2 remark	Reference3	ref3 remark	Reference4	ref4 remark	Reference5	ref5 remark	is_auto_post	require_internal_no
+BWVO001	1000	รับเงินจากลูกค้า	1211100100	2212000100	Look up from Branch Code	Ref1		Look up from Contract	Ref2		รหัสสาขา	Required	Contract no.	Optional	ช่องทางจ่ายเงิน				TRUE	TRUE
+BWVO002	1000	ส่งเงินต่อให้	1211100100	2212000100	Look up from Branch Code	Ref2		Look up from Contract	Ref1	1030	Contract no.							TRUE	TRUE
+BWVO003	1000	Fixed value example	1211200100	2212000100	Fixed value	103000000		Fixed value	1030		รหัสอ้างอิง							FALSE	FALSE
+BWVO004	1000	Credit look up only	1211200100	2212000100			Look up from Branch Code	Ref1		รหัสอ้างอิง							TRUE	FALSE
 ```
 
-### Upload Validation Rules
-- `company_code` must be one of the allowed values
-- `event_code` must be unique per `company_code`
-- Both `gl_debit_code` and `gl_credit_code` must exist in the GL master
-- `ref1_active` and `ref1_mandatory` must always be TRUE
-- If `profit_center_algorithm` is a Look Up type, `profit_center_lookup_field` is required
-- If `profit_center_algorithm` = `Fixed Value`, `profit_center_fixed_value` is required
-- Same rules apply for `cost_center_*`, `customer_*`, `vendor_*`
+### Validation Rules
+
+| Rule | Error Message |
+|------|---------------|
+| Any required column header is missing | `Missing column: <column name>` |
+| `Entity` not in allowed list | `Entity "<value>" is invalid (must be 1000/1010/1020/1030)` |
+| `Event code` is empty | `Event code is required` |
+| `Event code` exceeds 10 characters | `Event code max 10 chars (got <n>)` |
+| `Event Name` is empty | `Event Name is required` |
+| `Dr Account Number` is empty | `Dr Account Number is required` |
+| `Dr Account Number` not found in GL master | `Dr Account Number "<value>" not found in GL master` |
+| `Cr Account Number` is empty | `Cr Account Number is required` |
+| `Cr Account Number` not found in GL master | `Cr Account Number "<value>" not found in GL master` |
+| Logic Dr/Cr is not one of the 3 allowed values | `Logic DR/CR "<value>" is invalid (use: Fixed value / Look up from Branch Code / Look up from Contract)` |
+| Logic Dr/Cr = `Fixed value` but value column is empty | `DR/CR value is required when Logic is "Fixed value"` |
+| Logic Dr/Cr = `Look up from Branch Code` or `Look up from Contract` but value column is empty | `DR/CR value (reference field) is required when Logic is "<value>"` |
+| Logic Dr/Cr = `Look up from Branch Code` or `Look up from Contract` but value is not `Ref1`–`Ref6` | `DR/CR value "<value>" is invalid (use Ref1–Ref6)` |
+| `ref1 remark` is empty | `ref1 remark is required` |
+| `Reference2`–`Reference5` is not `Required` / `Optional` / empty | `Reference<n> "<value>" is invalid (use Required/Optional or leave empty)` |
+| `Reference2`–`Reference5` = `Required` or `Optional` but remark is empty | `ref<n> remark is required when Reference<n> is "<value>"` |
+| `is_auto_post` is empty | `is_auto_post is required (TRUE or FALSE)` |
+| `is_auto_post` is not `TRUE` or `FALSE` | `is_auto_post "<value>" is invalid (use TRUE or FALSE)` |
+| `require_internal_no` is empty | `require_internal_no is required (TRUE or FALSE)` |
+| `require_internal_no` is not `TRUE` or `FALSE` | `require_internal_no "<value>" is invalid (use TRUE or FALSE)` |
+| Duplicate `Event code` + `Entity` within the same file | `Duplicate event code "<value>" for entity <entity> in this file` |
+| `Event code` + `Entity` already exists in the system | `Event code "<value>" already exists for entity <entity>` |
 
 ---
 
