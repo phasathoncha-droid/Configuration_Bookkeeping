@@ -582,6 +582,15 @@
           Search
         </button>
       </div>
+      <div class="toolbar-right">
+        <button class="btn btn-secondary" onclick="exportAc()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-right:4px;">
+            <path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 10v1.5A1.5 1.5 0 003.5 13h7a1.5 1.5 0 001.5-1.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Export
+        </button>
+      </div>
     </div>
 
     <!-- Table -->
@@ -590,7 +599,7 @@
         <thead>
           <tr>
             <th>Contract Number</th>
-            <th>Current Unit Code</th>
+            <th>Current Branch Code </th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -776,6 +785,35 @@
           </div>
         </td>
       </tr>`;
+  }
+
+  // ─── Export ──────────────────────────────────────────────────────────────────
+  function exportAc() {
+    const searchType = document.getElementById('acSearchType').value;
+    const searchVal  = document.getElementById('acSearchInput').value.trim().toLowerCase();
+
+    const filtered = acData.filter(row => {
+      if (!row.isActive) return false;
+      if (!searchVal) return true;
+      if (searchType === 'contract') return row.contractNumber.toLowerCase().includes(searchVal);
+      return row.unitCode.toLowerCase().includes(searchVal);
+    });
+
+    if (filtered.length === 0) return;
+
+    const header = ['Contract Number', 'Current Branch Code'];
+    const rows = filtered.map(r => [
+      r.contractNumber,
+      r.unitCode,
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`));
+    const csv = [header.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'account_contracts.csv';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   // ─── Do Search (button click or Enter) ──────────────────────────────────────

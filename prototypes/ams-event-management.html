@@ -114,6 +114,12 @@
       border: 1px solid var(--border);
     }
     .btn-secondary:hover { background: #ECEEF2; }
+    .btn-success {
+      background: #007E33;
+      color: #fff;
+      border: 1px solid #007E33;
+    }
+    .btn-success:hover { background: #005c25; }
     .btn-danger-ghost {
       background: transparent;
       color: var(--danger);
@@ -303,6 +309,7 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.25);
       animation: modalIn 0.2s ease;
       margin: auto;
+      font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     @keyframes modalIn {
       from { opacity:0; transform: scale(0.96); }
@@ -565,6 +572,91 @@
       background: var(--bg-secondary);
     }
 
+    /* ── Target Attribute Config ── */
+    .target-attr-row {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .target-attr-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .target-attr-fields {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .target-attr-algo {
+      flex: 0 0 200px;
+    }
+    .target-attr-extra {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* ── Reference Field Chips ── */
+    .ref-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .ref-chip {
+      padding: 5px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      transition: all 0.15s;
+      user-select: none;
+      font-family: inherit;
+    }
+    .ref-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+    .ref-chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .ref-chip.ref-chip-locked {
+      cursor: default;
+    }
+    .ref-chip.ref-chip-locked:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .ref-config-row {
+      display: grid;
+      grid-template-columns: 80px 140px 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 10px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+    .ref-config-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
     /* ── Confirm Dialog ── */
     .confirm-backdrop {
       display: none;
@@ -704,6 +796,92 @@
       .ref-field-item { grid-template-columns: 1fr 1fr; }
       .table-search-wrap { max-width: 100%; }
     }
+
+    /* ── Upload Modal ── */
+    .upload-dropzone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 36px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--bg-secondary);
+    }
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .upload-dropzone .upload-icon { font-size: 32px; margin-bottom: 8px; }
+    .upload-dropzone .upload-text { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .upload-dropzone .upload-sub  { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+    .upload-file-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .upload-step-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .upload-step-header {
+      background: var(--bg-secondary);
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .upload-step-body { padding: 14px; }
+    .step-badge {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      font-size: 11px; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-badge-pass    { background: #ECFDF5; color: #065F46; }
+    .step-badge-fail    { background: #FEF2F2; color: #B91C1C; }
+    .step-badge-warn    { background: #FFFBEB; color: #92400E; }
+    .step-badge-pending { background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border); }
+    .validation-summary { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .val-stat {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 100px;
+      font-size: 12px; font-weight: 600;
+    }
+    .val-stat-valid { background: #ECFDF5; color: #065F46; border: 1px solid #6EE7B7; }
+    .val-stat-error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FCA5A5; }
+    .upload-preview-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-width: 2200px; }
+    .upload-preview-table thead th {
+      padding: 8px 10px;
+      text-align: left; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 1;
+      white-space: nowrap;
+      font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .upload-preview-table tbody tr { border-bottom: 1px solid var(--border); }
+    .upload-preview-table tbody td { padding: 8px 10px; vertical-align: top; border-right: 1px solid var(--border); font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .upload-row-valid { background: #F0FDF4; }
+    .upload-row-error { background: #FFF5F5; }
+    .upload-error-list { font-size: 11px; color: #B91C1C; margin-top: 2px; padding-left: 14px; }
+    .upload-error-list li { margin-bottom: 2px; }
   </style>
 </head>
 <body>
@@ -763,6 +941,17 @@
           <option value="inactive">Inactive</option>
           <option value="all">All Status</option>
         </select>
+        <button class="btn btn-secondary" onclick="exportEvents()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-right:4px;">
+            <path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 10v1.5A1.5 1.5 0 003.5 13h7a1.5 1.5 0 001.5-1.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Export
+        </button>
+        <button class="btn btn-success" onclick="openUploadModal()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 1v8M3 4.5L6.5 1 10 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 10v1.5a.5.5 0 00.5.5h10a.5.5 0 00.5-.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Upload
+        </button>
         <button class="btn btn-primary" onclick="openCreateModal()">+ Create New Event</button>
       </div>
     </div>
@@ -855,18 +1044,44 @@
         <!-- Reference Fields -->
         <div class="form-section-header" style="margin-bottom:0.75rem;">
           <div class="form-section-title">Reference Fields</div>
-          <button class="btn btn-add-inline" onclick="addReferenceField()">+ Add Reference Field</button>
         </div>
-        <div id="refFieldsContainer" style="margin-bottom:1rem;">
-          <div class="section-empty" id="refEmptyMsg">
-            No reference fields added yet. Click 'Add Reference Field' to add one.
-          </div>
-        </div>
+        <div class="ref-chips-row" id="refChipsRow"></div>
+        <div id="refFieldsContainer" style="margin-bottom:1rem;"></div>
 
         <!-- Require Internal Ref -->
-        <label class="checkbox-label">
-          <input type="checkbox" id="f_requireInternalRef" />
-          Require Internal Number
+        <label id="requireInternalRefRow" onclick="toggleRequireInternal()" style="
+          display:flex;align-items:center;justify-content:space-between;
+          padding:10px 14px;border-radius:8px;cursor:pointer;user-select:none;
+          border:1.5px solid var(--border);background:var(--bg-secondary);
+          transition:border-color 0.15s,background 0.15s;margin-bottom:8px;
+        ">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Require Internal Number</div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Transaction must include an internal reference number</div>
+          </div>
+          <div style="position:relative;width:44px;height:24px;flex-shrink:0;">
+            <input type="checkbox" id="f_requireInternalRef" style="opacity:0;width:0;height:0;position:absolute;" />
+            <span id="reqIntTrack" style="position:absolute;inset:0;border-radius:12px;background:#9CA3AF;transition:background 0.2s;"></span>
+            <span id="reqIntThumb" style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </div>
+        </label>
+
+        <!-- Auto Post to SAP -->
+        <label id="autoPostSAPRow" onclick="toggleAutoPostSAP()" style="
+          display:flex;align-items:center;justify-content:space-between;
+          padding:10px 14px;border-radius:8px;cursor:pointer;user-select:none;
+          border:1.5px solid var(--success);background:var(--success-light);
+          transition:border-color 0.15s,background 0.15s;
+        ">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Auto Post to SAP</div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Automatically post this event's journal entry to SAP FI</div>
+          </div>
+          <div style="position:relative;width:44px;height:24px;flex-shrink:0;">
+            <input type="checkbox" id="f_autoPostSAP" style="opacity:0;width:0;height:0;position:absolute;" checked />
+            <span id="autoPostTrack" style="position:absolute;inset:0;border-radius:12px;background:var(--success);transition:background 0.2s;"></span>
+            <span id="autoPostThumb" style="position:absolute;top:3px;left:23px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </div>
         </label>
       </div>
 
@@ -891,15 +1106,10 @@
           </div>
         </div>
 
-        <div class="form-section-header">
-          <div class="form-section-title">Algorithm Mappings</div>
-          <button class="btn btn-add-inline" onclick="addMapping('debit')">+ Add Algorithm Mapping</button>
+        <div class="form-section-header" style="margin-bottom:0.75rem;">
+          <div class="form-section-title">Target Attribute Configuration</div>
         </div>
-        <div id="debitMappingsContainer">
-          <div class="section-empty" id="debitMappingEmpty">
-            No algorithm mappings added yet. Click 'Add Algorithm Mapping' to add one.
-          </div>
-        </div>
+        <div id="debitTargetConfig"></div>
       </div>
 
       <!-- ══ LAYER 3: CREDIT ══ -->
@@ -923,15 +1133,10 @@
           </div>
         </div>
 
-        <div class="form-section-header">
-          <div class="form-section-title">Algorithm Mappings</div>
-          <button class="btn btn-add-inline" onclick="addMapping('credit')">+ Add Algorithm Mapping</button>
+        <div class="form-section-header" style="margin-bottom:0.75rem;">
+          <div class="form-section-title">Target Attribute Configuration</div>
         </div>
-        <div id="creditMappingsContainer">
-          <div class="section-empty" id="creditMappingEmpty">
-            No algorithm mappings added yet. Click 'Add Algorithm Mapping' to add one.
-          </div>
-        </div>
+        <div id="creditTargetConfig"></div>
       </div>
 
     </div><!-- /modal-body -->
@@ -956,25 +1161,92 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════
+     BULK UPLOAD MODAL
+════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="uploadModal">
+  <div class="modal" style="max-width:980px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title"> Upload Events</div>
+      </div>
+      <button class="modal-close" onclick="closeUploadModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Dropzone -->
+      <div id="uploadDropzone" class="upload-dropzone"
+        onclick="document.getElementById('uploadFileInput').click()"
+        ondragover="event.preventDefault();this.classList.add('dragover')"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="event.preventDefault();this.classList.remove('dragover');handleFileDrop(event)">
+        <div class="upload-icon">📤</div>
+        <div class="upload-text">Click to browse or drag &amp; drop file here</div>
+        <div class="upload-sub">Accepts .tsv, .csv, .txt — tab-separated or comma-separated · 34 columns required</div>
+      </div>
+      <input type="file" id="uploadFileInput" accept=".tsv,.csv,.txt" style="display:none" onchange="handleFileSelect(this)" />
+
+      <!-- File info bar (shown after file selected) -->
+      <div id="uploadFileInfo" style="display:none;">
+        <div class="upload-file-info">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 1.5h6.5l3 3V13a.5.5 0 01-.5.5h-9A.5.5 0 012.5 13V2a.5.5 0 01.5-.5z" stroke="#378ADD" stroke-width="1.4" fill="none"/><path d="M9.5 1.5v3.5H13" stroke="#378ADD" stroke-width="1.4"/></svg>
+          <span id="uploadFileName" style="font-weight:600;font-size:13px;flex:1;"></span>
+          <span id="uploadFileSize" style="font-size:12px;color:var(--text-secondary);"></span>
+          <button class="btn btn-danger-ghost btn-sm" onclick="clearUploadFile()">Remove</button>
+        </div>
+      </div>
+
+      <!-- Validation Results (shown after Validate clicked) -->
+      <div id="uploadResults" style="display:none;margin-top:1rem;">
+
+        <!-- Step 1: Field Validation -->
+        <div class="upload-step-card">
+          <div class="upload-step-header">
+            <span class="step-badge step-badge-pending" id="uploadStep1Badge">1</span>
+            Field Validation — Column headers &amp; required fields
+          </div>
+          <div class="upload-step-body" id="uploadStep1Content"></div>
+        </div>
+
+        <!-- Step 2: Row Validation -->
+        <div class="upload-step-card">
+          <div class="upload-step-header">
+            <span class="step-badge step-badge-pending" id="uploadStep2Badge">2</span>
+            Row Validation — Business rules &amp; data integrity
+          </div>
+          <div class="upload-step-body" id="uploadStep2Content"></div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeUploadModal()">Cancel</button>
+      <button class="btn btn-primary" id="uploadConfirmBtn" style="display:none" onclick="confirmUpload()">Confirm Import</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ════════════════════════════════════════════
 //  DATA
 // ════════════════════════════════════════════
 
+// trackingDimensionId: 1=Profit Center, 2=Cost Center
+// subLedgerTypeId:     1=Customer, 2=Vendor, 3=No Subledger
 const GL_DATA = [
-  { code: '1211100100', name: 'Short-term Receivables',    type: 'Asset' },
-  { code: '1211100200', name: 'Trade Receivables',          type: 'Asset' },
-  { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset' },
-  { code: '1212000100', name: 'Inventory',                 type: 'Asset' },
-  { code: '2211100100', name: 'Accounts Payable',          type: 'Liability' },
-  { code: '2212000100', name: 'Long-term Loans',           type: 'Liability' },
-  { code: '2212100100', name: 'Accrued Expenses',          type: 'Liability' },
-  { code: '4110000100', name: 'Service Revenue',           type: 'Revenue' },
-  { code: '4111000100', name: 'Interest Income',           type: 'Revenue' },
-  { code: '4120000100', name: 'Fee Income',                type: 'Revenue' },
-  { code: '5110000100', name: 'Operating Expenses',        type: 'Expense' },
-  { code: '5120000100', name: 'Interest Expense',          type: 'Expense' },
-  { code: '5130000100', name: 'Administrative Expenses',   type: 'Expense' },
+  { code: '1211100100', name: 'Short-term Receivables',    type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 1 },
+  { code: '1211100200', name: 'Trade Receivables',          type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 1 },
+  { code: '1211200100', name: 'Cash and Cash Equivalents', type: 'Asset',     trackingDimensionId: 1, subLedgerTypeId: 3 },
+  { code: '1212000100', name: 'Inventory',                 type: 'Asset',     trackingDimensionId: 2, subLedgerTypeId: 3 },
+  { code: '2211100100', name: 'Accounts Payable',          type: 'Liability', trackingDimensionId: 1, subLedgerTypeId: 2 },
+  { code: '2212000100', name: 'Long-term Loans',           type: 'Liability', trackingDimensionId: 1, subLedgerTypeId: 3 },
+  { code: '2212100100', name: 'Accrued Expenses',          type: 'Liability', trackingDimensionId: 2, subLedgerTypeId: 3 },
+  { code: '4110000100', name: 'Service Revenue',           type: 'Revenue',   trackingDimensionId: 1, subLedgerTypeId: 3 },
+  { code: '4111000100', name: 'Interest Income',           type: 'Revenue',   trackingDimensionId: 1, subLedgerTypeId: 3 },
+  { code: '4120000100', name: 'Fee Income',                type: 'Revenue',   trackingDimensionId: 1, subLedgerTypeId: 3 },
+  { code: '5110000100', name: 'Operating Expenses',        type: 'Expense',   trackingDimensionId: 2, subLedgerTypeId: 3 },
+  { code: '5120000100', name: 'Interest Expense',          type: 'Expense',   trackingDimensionId: 2, subLedgerTypeId: 3 },
+  { code: '5130000100', name: 'Administrative Expenses',   type: 'Expense',   trackingDimensionId: 2, subLedgerTypeId: 3 },
 ];
 
 const REFERENCE_OPTIONS = [
@@ -988,8 +1260,10 @@ const REFERENCE_OPTIONS = [
 
 const ALGORITHM_OPTIONS = [
   { id: 1, label: 'Fixed Value' },
-  { id: 2, label: 'Look Up Cost Center' },
-  { id: 3, label: 'Look Up Profit Center' },
+  { id: 2, label: 'Look Up Profit Center by Branch Code' },
+  { id: 3, label: 'Look Up Cost Center by Branch Code' },
+  { id: 4, label: 'Look Up Profit Center by Contract Number' },
+  { id: 5, label: 'Look Up Cost Center by Contract Number' },
 ];
 
 const TARGET_OPTIONS = [
@@ -998,6 +1272,14 @@ const TARGET_OPTIONS = [
   { id: 3, label: 'Customer' },
   { id: 4, label: 'Vendor' },
 ];
+
+// Which algorithm IDs are available per target attribute
+const TARGET_ALGO_MAP = {
+  1: [1, 2, 4], // Profit Center: Fixed Value, Look Up PC by Branch Code, Look Up PC by Contract Number
+  2: [1, 3, 5], // Cost Center:   Fixed Value, Look Up CC by Branch Code, Look Up CC by Contract Number
+  3: [1],       // Customer:      Fixed Value only
+  4: [1],       // Vendor:        Fixed Value only
+};
 
 let events = [
   { id: 1,  companyCode: '1000', eventCode: 'BPAY001', eventName: 'รับชำระจากลูกค้า-เงินสด',         isRequiredInternalNo: false, isActive: true,  debitGL: { code: '1211100100', name: 'Short-term Receivables',    type: 'Asset'     }, creditGL: { code: '2212000100', name: 'Long-term Loans',          type: 'Liability' }, referenceFields: [{ id:1, fieldId:1, isMandatory:true,  remark:'Required from lending system' }], debitMappings: [{ refId:1, algoId:1, targetId:1, defaultValue:'1002000000' }], creditMappings: [{ refId:1, algoId:2, targetId:2, defaultValue:'' }] },
@@ -1033,11 +1315,7 @@ let events = [
 
 let editingId = null;
 let deleteTargetId = null;
-let refFieldCounter = 0;
-let mappingCounters = { debit: 0, credit: 0 };
 let selectedGL = { debit: null, credit: null };
-let currentDebitMappings = [];
-let currentCreditMappings = [];
 let currentRefFields = [];
 let tableSearchQuery = '';
 let statusFilter = 'active';
@@ -1087,6 +1365,82 @@ function hl(text, query) {
 // ════════════════════════════════════════════
 //  RENDER TABLE
 // ════════════════════════════════════════════
+
+function exportEvents() {
+  let filtered = [...events];
+  if (statusFilter !== 'all') filtered = filtered.filter(ev => statusFilter === 'active' ? ev.isActive !== false : ev.isActive === false);
+  if (companyFilter !== 'all') filtered = filtered.filter(ev => ev.companyCode === companyFilter);
+  if (tableSearchQuery) {
+    const q = tableSearchQuery.toLowerCase();
+    filtered = filtered.filter(ev =>
+      ev.companyCode.toLowerCase().includes(q) ||
+      ev.eventCode.toLowerCase().includes(q) ||
+      ev.eventName.toLowerCase().includes(q)
+    );
+  }
+
+  const headers = [
+    'Event code','Entity','Event Name',
+    'Dr Account Number','Cr Account Number',
+    'Logic Dr.Profit center / cost center','Dr. Profit center / cost center value','Dr. Sub ledger Value',
+    'Logic Cr.Profit center / cost center','Cr. Profit center / cost center value','Cr. Sub ledger Value',
+    'ref1 remark',
+    'Reference2','ref2 remark',
+    'Reference3','ref3 remark',
+    'Reference4','ref4 remark',
+    'Reference5','ref5 remark',
+  ];
+
+  const rows = filtered.map(ev => {
+    const debitPcCc    = (ev.debitMappings  || []).find(m => m.targetId === 1 || m.targetId === 2);
+    const debitSlm     = (ev.debitMappings  || []).find(m => m.targetId === 3 || m.targetId === 4);
+    const creditPcCc   = (ev.creditMappings || []).find(m => m.targetId === 1 || m.targetId === 2);
+    const creditSlm    = (ev.creditMappings || []).find(m => m.targetId === 3 || m.targetId === 4);
+
+    const getLogicLabel = (m) => {
+      if (!m || !m.algoId) return '';
+      if (m.algoId === 1) return 'Fixed value';
+      if (m.algoId === 2 || m.algoId === 3) return 'Look up from ref';
+      if (m.algoId === 4 || m.algoId === 5) return 'Look up from Branch contract';
+      return '';
+    };
+    const getLogicValue = (m) => {
+      if (!m || !m.algoId) return '';
+      if (m.algoId === 1) return m.defaultValue || '';
+      if (m.algoId === 2 || m.algoId === 3) return m.refId ? `Ref${m.refId}` : '';
+      return '';
+    };
+
+    const refs = {};
+    (ev.referenceFields || []).forEach(rf => { refs[rf.fieldId] = rf; });
+    const getRefStatus = (n) => {
+      const rf = refs[n];
+      if (!rf) return 'Null';
+      return rf.isMandatory ? 'Required' : 'Optional';
+    };
+
+    return [
+      ev.eventCode, ev.companyCode, ev.eventName,
+      ev.debitGL?.code || '', ev.creditGL?.code || '',
+      getLogicLabel(debitPcCc), getLogicValue(debitPcCc), debitSlm?.defaultValue || '',
+      getLogicLabel(creditPcCc), getLogicValue(creditPcCc), creditSlm?.defaultValue || '',
+      refs[1]?.remark || '',
+      getRefStatus(2), refs[2]?.remark || '',
+      getRefStatus(3), refs[3]?.remark || '',
+      getRefStatus(4), refs[4]?.remark || '',
+      getRefStatus(5), refs[5]?.remark || '',
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`);
+  });
+
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'event_config.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 function renderTable() {
   const tbody = document.getElementById('eventTableBody');
@@ -1157,6 +1511,63 @@ function updateStatusLabel() {
   document.getElementById('statusToggleThumb').style.left = checked ? '23px' : '3px';
 }
 
+function toggleRequireInternal() {
+  const cb    = document.getElementById('f_requireInternalRef');
+  const track = document.getElementById('reqIntTrack');
+  const thumb = document.getElementById('reqIntThumb');
+  const row   = document.getElementById('requireInternalRefRow');
+  cb.checked = !cb.checked;
+  if (cb.checked) {
+    track.style.background = 'var(--success)';
+    thumb.style.left = '23px';
+    row.style.borderColor = 'var(--success)';
+    row.style.background  = 'var(--success-light)';
+  } else {
+    track.style.background = '#9CA3AF';
+    thumb.style.left = '3px';
+    row.style.borderColor = 'var(--border)';
+    row.style.background  = 'var(--bg-secondary)';
+  }
+}
+
+function toggleAutoPostSAP() {
+  const cb    = document.getElementById('f_autoPostSAP');
+  const track = document.getElementById('autoPostTrack');
+  const thumb = document.getElementById('autoPostThumb');
+  const row   = document.getElementById('autoPostSAPRow');
+  cb.checked = !cb.checked;
+  if (cb.checked) {
+    track.style.background = 'var(--success)';
+    thumb.style.left = '23px';
+    row.style.borderColor = 'var(--success)';
+    row.style.background  = 'var(--success-light)';
+  } else {
+    track.style.background = '#9CA3AF';
+    thumb.style.left = '3px';
+    row.style.borderColor = 'var(--border)';
+    row.style.background  = 'var(--bg-secondary)';
+  }
+}
+
+function setAutoPostSAP(value) {
+  const cb    = document.getElementById('f_autoPostSAP');
+  const track = document.getElementById('autoPostTrack');
+  const thumb = document.getElementById('autoPostThumb');
+  const row   = document.getElementById('autoPostSAPRow');
+  cb.checked = value;
+  if (value) {
+    track.style.background = 'var(--success)';
+    thumb.style.left = '23px';
+    row.style.borderColor = 'var(--success)';
+    row.style.background  = 'var(--success-light)';
+  } else {
+    track.style.background = '#9CA3AF';
+    thumb.style.left = '3px';
+    row.style.borderColor = 'var(--border)';
+    row.style.background  = 'var(--bg-secondary)';
+  }
+}
+
 // ════════════════════════════════════════════
 //  MODAL OPEN / CLOSE
 // ════════════════════════════════════════════
@@ -1181,6 +1592,13 @@ function editEvent(id) {
   document.getElementById('f_eventCode').value = ev.eventCode;
   document.getElementById('f_eventName').value = ev.eventName;
   document.getElementById('f_requireInternalRef').checked = ev.isRequiredInternalNo;
+  if (ev.isRequiredInternalNo) {
+    document.getElementById('reqIntTrack').style.background = 'var(--success)';
+    document.getElementById('reqIntThumb').style.left = '23px';
+    document.getElementById('requireInternalRefRow').style.borderColor = 'var(--success)';
+    document.getElementById('requireInternalRefRow').style.background  = 'var(--success-light)';
+  }
+  setAutoPostSAP(ev.isAutoPostSAP !== false);
 
   // Show status toggle in edit mode
   document.getElementById('statusToggleRow').style.display = 'block';
@@ -1191,14 +1609,12 @@ function editEvent(id) {
   selectGL('debit', GL_DATA.find(g => g.code === ev.debitGL.code) || ev.debitGL);
   selectGL('credit', GL_DATA.find(g => g.code === ev.creditGL.code) || ev.creditGL);
 
-  // Reference fields
-  ev.referenceFields.forEach(rf => {
-    addReferenceField(rf);
-  });
+  // Reference fields — activate chips then populate config
+  ev.referenceFields.forEach(rf => activateRefChip(rf.fieldId, rf));
 
-  // Mappings
-  ev.debitMappings.forEach(m => addMapping('debit', m));
-  ev.creditMappings.forEach(m => addMapping('credit', m));
+  // Target attribute configs
+  populateTargetConfig('debit', ev.debitMappings);
+  populateTargetConfig('credit', ev.creditMappings);
 }
 
 function closeModal() {
@@ -1211,24 +1627,20 @@ function resetForm() {
   document.getElementById('f_eventCode').value = '';
   document.getElementById('f_eventName').value = '';
   document.getElementById('f_requireInternalRef').checked = false;
+  document.getElementById('reqIntTrack').style.background = '#9CA3AF';
+  document.getElementById('reqIntThumb').style.left = '3px';
+  document.getElementById('requireInternalRefRow').style.borderColor = 'var(--border)';
+  document.getElementById('requireInternalRefRow').style.background  = 'var(--bg-secondary)';
+  setAutoPostSAP(true);
 
   clearGL('debit');
   clearGL('credit');
   document.getElementById('debitGLSearch').value = '';
   document.getElementById('creditGLSearch').value = '';
 
-  document.getElementById('refFieldsContainer').innerHTML =
-    '<div class="section-empty" id="refEmptyMsg">No reference fields added yet. Click \'Add Reference Field\' to add one.</div>';
-  document.getElementById('debitMappingsContainer').innerHTML =
-    '<div class="section-empty" id="debitMappingEmpty">No algorithm mappings added yet. Click \'Add Algorithm Mapping\' to add one.</div>';
-  document.getElementById('creditMappingsContainer').innerHTML =
-    '<div class="section-empty" id="creditMappingEmpty">No algorithm mappings added yet. Click \'Add Algorithm Mapping\' to add one.</div>';
-
-  refFieldCounter = 0;
-  mappingCounters = { debit: 0, credit: 0 };
-  currentRefFields = [];
-  currentDebitMappings = [];
-  currentCreditMappings = [];
+  initRefChips();
+  renderTargetConfig('debit', null);
+  renderTargetConfig('credit', null);
 
   document.querySelectorAll('.form-control.error').forEach(el => el.classList.remove('error'));
   clearModalAlert();
@@ -1287,12 +1699,14 @@ function selectGL(side, gl) {
   document.getElementById(side + 'GLText').textContent = gl.code + ' - ' + gl.name;
   display.classList.add('visible');
   document.getElementById(side + 'GLSearch').classList.remove('error');
+  renderTargetConfig(side, gl);
 }
 
 function clearGL(side) {
   selectedGL[side] = null;
   document.getElementById(side + 'GLSelected').classList.remove('visible');
   document.getElementById(side + 'GLSearch').value = '';
+  renderTargetConfig(side, null);
 }
 
 // Close dropdowns when clicking outside
@@ -1356,90 +1770,88 @@ function removeRefField(idx) {
 }
 
 // ════════════════════════════════════════════
-//  ALGORITHM MAPPINGS
+//  TARGET ATTRIBUTE CONFIG
 // ════════════════════════════════════════════
 
-function addMapping(side, data = null) {
-  const container = document.getElementById(side + 'MappingsContainer');
-  const emptyMsg = document.getElementById(side + 'MappingEmpty');
-  if (emptyMsg) emptyMsg.remove();
-
-  mappingCounters[side]++;
-  const idx = side + '_' + mappingCounters[side];
-  const num = mappingCounters[side];
-
-  const div = document.createElement('div');
-  div.className = 'mapping-item';
-  div.id = 'mapping_' + idx;
-  div.innerHTML = `
-    <div class="mapping-item-header">
-      <span class="mapping-number">Mapping #${num}</span>
-      <button class="btn btn-danger-ghost btn-sm" onclick="removeMapping('${idx}', '${side}')">✕ Remove</button>
-    </div>
-    <div class="mapping-grid">
-      <div>
-        <div class="mapping-field-label">Reference Field</div>
-        <select class="form-control" id="map_ref_${idx}" onchange="updateMappingSummary('${idx}')">
-          <option value="">-- Select --</option>
-          ${REFERENCE_OPTIONS.map(r => `<option value="${r.id}" ${data && data.refId === r.id ? 'selected' : ''}>${r.label}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <div class="mapping-field-label">Algorithm</div>
-        <select class="form-control" id="map_algo_${idx}" onchange="updateMappingSummary('${idx}')">
-          <option value="">-- Select --</option>
-          ${ALGORITHM_OPTIONS.map(a => `<option value="${a.id}" ${data && data.algoId === a.id ? 'selected' : ''}>${a.label}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <div class="mapping-field-label">Target Attribute</div>
-        <select class="form-control" id="map_target_${idx}" onchange="updateMappingSummary('${idx}')">
-          <option value="">-- Select --</option>
-          ${TARGET_OPTIONS.map(t => `<option value="${t.id}" ${data && data.targetId === t.id ? 'selected' : ''}>${t.label}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <div class="mapping-field-label">Default Value</div>
-        <input class="form-control mono" id="map_default_${idx}" type="text"
-          placeholder="e.g., 1002000000"
-          value="${data ? data.defaultValue || '' : ''}" />
-      </div>
-    </div>
-    <div class="mapping-summary" id="map_summary_${idx}">
-      <span>Reference: <b id="ms_ref_${idx}">—</b></span>
-      <span>Algorithm: <b id="ms_algo_${idx}">—</b></span>
-      <span>Target: <b id="ms_target_${idx}">—</b></span>
-    </div>
-  `;
-  container.appendChild(div);
-
-  if (data) updateMappingSummary(idx);
+function getTargetAttrsForGL(gl) {
+  if (!gl) return null;
+  const attrs = [];
+  if (gl.trackingDimensionId === 1) attrs.push(TARGET_OPTIONS.find(t => t.id === 1)); // Profit Center
+  if (gl.trackingDimensionId === 2) attrs.push(TARGET_OPTIONS.find(t => t.id === 2)); // Cost Center
+  if (gl.subLedgerTypeId === 1)     attrs.push(TARGET_OPTIONS.find(t => t.id === 3)); // Customer
+  if (gl.subLedgerTypeId === 2)     attrs.push(TARGET_OPTIONS.find(t => t.id === 4)); // Vendor
+  return attrs.filter(Boolean);
 }
 
-function updateMappingSummary(idx) {
-  const refVal = document.getElementById('map_ref_' + idx)?.value;
-  const algoVal = document.getElementById('map_algo_' + idx)?.value;
-  const targetVal = document.getElementById('map_target_' + idx)?.value;
+function renderTargetConfig(side, gl) {
+  const container = document.getElementById(side + 'TargetConfig');
+  if (!container) return;
 
-  const refLabel = REFERENCE_OPTIONS.find(r => r.id == refVal)?.label || '—';
-  const algoLabel = ALGORITHM_OPTIONS.find(a => a.id == algoVal)?.label || '—';
-  const targetLabel = TARGET_OPTIONS.find(t => t.id == targetVal)?.label || '—';
-
-  const ms_ref = document.getElementById('ms_ref_' + idx);
-  const ms_algo = document.getElementById('ms_algo_' + idx);
-  const ms_target = document.getElementById('ms_target_' + idx);
-  if (ms_ref) ms_ref.textContent = refLabel;
-  if (ms_algo) ms_algo.textContent = algoLabel;
-  if (ms_target) ms_target.textContent = targetLabel;
-}
-
-function removeMapping(idx, side) {
-  const el = document.getElementById('mapping_' + idx);
-  if (el) el.remove();
-  const container = document.getElementById(side + 'MappingsContainer');
-  if (container.children.length === 0) {
-    container.innerHTML = `<div class="section-empty" id="${side}MappingEmpty">No algorithm mappings added yet. Click 'Add Algorithm Mapping' to add one.</div>`;
+  if (!gl) {
+    container.innerHTML = '<div class="section-empty" style="margin-bottom:0;">Select a GL account above to see target attribute configuration.</div>';
+    return;
   }
+
+  const attrs = getTargetAttrsForGL(gl);
+  if (attrs.length === 0) {
+    container.innerHTML = '<div class="section-empty" style="margin-bottom:0;">This GL account has no target attribute configuration.</div>';
+    return;
+  }
+
+  container.innerHTML = attrs.map(t => {
+    const algoIds = TARGET_ALGO_MAP[t.id] || [1];
+    const algoOpts = ALGORITHM_OPTIONS.filter(a => algoIds.includes(a.id));
+    return `
+    <div class="target-attr-row" id="${side}_target_${t.id}">
+      <div class="target-attr-label">${t.label}</div>
+      <div class="target-attr-fields">
+        <select class="form-control target-attr-algo" id="${side}_algo_${t.id}"
+          onchange="onAlgoChange('${side}', ${t.id})">
+          <option value="">Not configured</option>
+          ${algoOpts.map(a => `<option value="${a.id}">${a.label}</option>`).join('')}
+        </select>
+        <select class="form-control target-attr-extra" id="${side}_ref_${t.id}" style="display:none">
+          <option value="">-- Select Reference --</option>
+          ${REFERENCE_OPTIONS.map(r => `<option value="${r.id}">${r.label}</option>`).join('')}
+        </select>
+        <input class="form-control mono target-attr-extra" id="${side}_fixedval_${t.id}"
+          type="text" placeholder="Enter fixed value..." style="display:none" />
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function onAlgoChange(side, targetId) {
+  const algoVal = document.getElementById(`${side}_algo_${targetId}`)?.value;
+  const refEl   = document.getElementById(`${side}_ref_${targetId}`);
+  const fixedEl = document.getElementById(`${side}_fixedval_${targetId}`);
+  if (algoVal === '1') {
+    if (refEl)   refEl.style.display   = 'none';
+    if (fixedEl) fixedEl.style.display = '';
+  } else if (algoVal && algoVal !== '') {
+    if (refEl)   refEl.style.display   = '';
+    if (fixedEl) fixedEl.style.display = 'none';
+  } else {
+    if (refEl)   refEl.style.display   = 'none';
+    if (fixedEl) fixedEl.style.display = 'none';
+  }
+}
+
+function populateTargetConfig(side, mappings) {
+  mappings.forEach(m => {
+    if (!m.targetId) return;
+    const algoEl = document.getElementById(`${side}_algo_${m.targetId}`);
+    if (!algoEl) return;
+    algoEl.value = m.algoId || '';
+    onAlgoChange(side, m.targetId);
+    if (m.algoId === 1) {
+      const fixedEl = document.getElementById(`${side}_fixedval_${m.targetId}`);
+      if (fixedEl) fixedEl.value = m.defaultValue || '';
+    } else {
+      const refEl = document.getElementById(`${side}_ref_${m.targetId}`);
+      if (refEl) refEl.value = m.refId || '';
+    }
+  });
 }
 
 // ════════════════════════════════════════════
@@ -1447,32 +1859,122 @@ function removeMapping(idx, side) {
 // ════════════════════════════════════════════
 
 function collectMappings(side) {
-  const container = document.getElementById(side + 'MappingsContainer');
-  const items = container.querySelectorAll('.mapping-item');
   const result = [];
-  items.forEach(item => {
-    const id = item.id.replace('mapping_', '');
-    const refId = parseInt(document.getElementById('map_ref_' + id)?.value) || null;
-    const algoId = parseInt(document.getElementById('map_algo_' + id)?.value) || null;
-    const targetId = parseInt(document.getElementById('map_target_' + id)?.value) || null;
-    const defaultValue = document.getElementById('map_default_' + id)?.value || '';
-    result.push({ refId, algoId, targetId, defaultValue });
+  TARGET_OPTIONS.forEach(t => {
+    const algoVal = parseInt(document.getElementById(`${side}_algo_${t.id}`)?.value) || null;
+    if (!algoVal) return;
+    let refId = null;
+    let defaultValue = '';
+    if (algoVal === 1) {
+      defaultValue = document.getElementById(`${side}_fixedval_${t.id}`)?.value || '';
+    } else {
+      refId = parseInt(document.getElementById(`${side}_ref_${t.id}`)?.value) || null;
+    }
+    result.push({ refId, algoId: algoVal, targetId: t.id, defaultValue });
   });
   return result;
 }
 
-function collectRefFields() {
-  const container = document.getElementById('refFieldsContainer');
-  const items = container.querySelectorAll('.ref-field-item');
-  const result = [];
-  items.forEach(item => {
-    const idx = item.id.replace('refField_', '');
-    const fieldId = parseInt(document.getElementById('refField_sel_' + idx)?.value) || null;
-    const remark = document.getElementById('refField_remark_' + idx)?.value || '';
-    const isMandatory = document.getElementById('refField_mandatory_' + idx)?.value === 'mandatory';
-    result.push({ fieldId, isMandatory, remark });
+// ════════════════════════════════════════════
+//  REFERENCE FIELD CHIPS
+// ════════════════════════════════════════════
+
+const DEFAULT_ACTIVE_REFS  = [1, 6];
+const ALWAYS_MANDATORY_REFS = [1, 6];
+
+function initRefChips() {
+  const chipsRow = document.getElementById('refChipsRow');
+  const configArea = document.getElementById('refFieldsContainer');
+  if (!chipsRow) return;
+  chipsRow.innerHTML = REFERENCE_OPTIONS.map(r => {
+    const locked = DEFAULT_ACTIVE_REFS.includes(r.id);
+    return `<button type="button" class="ref-chip${locked ? ' ref-chip-locked' : ''}" id="refChip_${r.id}"
+      onclick="toggleRefChip(${r.id})">${r.label}</button>`;
+  }).join('');
+  if (configArea) configArea.innerHTML = '';
+  DEFAULT_ACTIVE_REFS.forEach(id => {
+    const chip = document.getElementById('refChip_' + id);
+    if (chip) chip.classList.add('active');
   });
-  return result;
+  renderRefConfig();
+}
+
+function toggleRefChip(fieldId) {
+  if (DEFAULT_ACTIVE_REFS.includes(fieldId)) return;
+  const chip = document.getElementById('refChip_' + fieldId);
+  if (!chip) return;
+  chip.classList.toggle('active');
+  renderRefConfig();
+}
+
+function activateRefChip(fieldId, data) {
+  const chip = document.getElementById('refChip_' + fieldId);
+  if (chip) chip.classList.add('active');
+  renderRefConfig();
+  if (data) {
+    const mandatoryEl = document.getElementById('refCfg_mandatory_' + fieldId);
+    const remarkEl    = document.getElementById('refCfg_remark_' + fieldId);
+    if (mandatoryEl) mandatoryEl.value = data.isMandatory ? 'mandatory' : 'optional';
+    if (remarkEl)    remarkEl.value    = data.remark || '';
+  }
+}
+
+function renderRefConfig() {
+  const configArea = document.getElementById('refFieldsContainer');
+  if (!configArea) return;
+  const activeIds = REFERENCE_OPTIONS.map(r => r.id).filter(id =>
+    document.getElementById('refChip_' + id)?.classList.contains('active')
+  );
+  if (activeIds.length === 0) {
+    configArea.innerHTML = '';
+    return;
+  }
+  // Preserve existing values before re-render
+  const saved = {};
+  activeIds.forEach(id => {
+    saved[id] = {
+      isMandatory: document.getElementById('refCfg_mandatory_' + id)?.value || 'mandatory',
+      remark:      document.getElementById('refCfg_remark_' + id)?.value    || '',
+    };
+  });
+  configArea.innerHTML = activeIds.map(id => {
+    const locked = ALWAYS_MANDATORY_REFS.includes(id);
+    const mandatoryField = locked
+      ? `<select class="form-control" id="refCfg_mandatory_${id}" disabled style="opacity:0.6;cursor:not-allowed;">
+           <option value="mandatory">Mandatory</option>
+         </select>`
+      : `<select class="form-control" id="refCfg_mandatory_${id}">
+           <option value="mandatory">Mandatory</option>
+           <option value="optional">Optional</option>
+         </select>`;
+    return `
+    <div class="ref-config-row" id="refCfg_${id}">
+      <div class="ref-config-label">Ref ${id}</div>
+      ${mandatoryField}
+      <input class="form-control" id="refCfg_remark_${id}" type="text"
+        placeholder="Remark (optional)..." />
+    </div>`;
+  }).join('');
+  // Restore values
+  activeIds.forEach(id => {
+    const s = saved[id];
+    if (s) {
+      const m = document.getElementById('refCfg_mandatory_' + id);
+      const r = document.getElementById('refCfg_remark_' + id);
+      if (m) m.value = s.isMandatory;
+      if (r) r.value = s.remark;
+    }
+  });
+}
+
+function collectRefFields() {
+  return REFERENCE_OPTIONS
+    .filter(r => document.getElementById('refChip_' + r.id)?.classList.contains('active'))
+    .map(r => ({
+      fieldId:     r.id,
+      isMandatory: ALWAYS_MANDATORY_REFS.includes(r.id) || document.getElementById('refCfg_mandatory_' + r.id)?.value === 'mandatory',
+      remark:      document.getElementById('refCfg_remark_' + r.id)?.value || '',
+    }));
 }
 
 // ════════════════════════════════════════════
@@ -1518,6 +2020,7 @@ function saveEvent() {
   const eventCode = document.getElementById('f_eventCode').value.trim();
   const eventName = document.getElementById('f_eventName').value.trim();
   const isRequiredInternalNo = document.getElementById('f_requireInternalRef').checked;
+  const isAutoPostSAP        = document.getElementById('f_autoPostSAP').checked;
   const isActive = editingId ? document.getElementById('f_isActive').checked : true;
   const refFields = collectRefFields();
   const debitMappings = collectMappings('debit');
@@ -1532,6 +2035,7 @@ function saveEvent() {
     eventCode,
     eventName,
     isRequiredInternalNo,
+    isAutoPostSAP,
     isActive,
     debitGL,
     creditGL,
@@ -1547,6 +2051,7 @@ function saveEvent() {
     eventCode,
     eventName,
     isRequiredInternalNo,
+    isAutoPostSAP,
     eventReferenceDetail: refFields.map(rf => ({
       referenceFieldId: rf.fieldId,
       isMandatory: rf.isMandatory,
@@ -1652,6 +2157,436 @@ function showModalAlert(msg) {
 function clearModalAlert() {
   const area = document.getElementById('modalAlertArea');
   if (area) area.innerHTML = '';
+}
+
+// ════════════════════════════════════════════
+//  BULK UPLOAD
+// ════════════════════════════════════════════
+
+// Header normalization: lowercase, collapse whitespace
+function normalizeHeader(h) {
+  return h.toLowerCase().replace(/\s+/g, ' ').trim().replace(/^﻿/, '');
+}
+const HEADER_MAP = {
+  'event code': 'event_code',
+  'entity': 'entity',
+  'event name': 'event_name',
+  'dr account number': 'dr_account_number',
+  'cr account number': 'cr_account_number',
+  'logic dr.profit center / cost center': 'logic_dr',
+  'dr. profit center / cost center value': 'dr_value',
+  'dr. sub ledger value': 'dr_sub_ledger',
+  'logic cr.profit center / cost center': 'logic_cr',
+  'cr. profit center / cost center value': 'cr_value',
+  'cr. sub ledger value': 'cr_sub_ledger',
+  'ref1 remark': 'ref1_remark',
+  'reference2': 'reference2',
+  'ref2 remark': 'ref2_remark',
+  'reference3': 'reference3',
+  'ref3 remark': 'ref3_remark',
+  'reference4': 'reference4',
+  'ref4 remark': 'ref4_remark',
+  'reference5': 'reference5',
+  'ref5 remark': 'ref5_remark',
+};
+const REQUIRED_UPLOAD_COLS = Object.keys(HEADER_MAP);
+
+const VALID_UPLOAD_COMPANIES = ['1000','1010','1020','1030'];
+const VALID_ALGO_STRINGS     = ['look up from ref', 'look up from branch contract', 'fixed value'];
+const VALID_REF_NAMES        = ['ref1','ref2','ref3','ref4','ref5'];
+const VALID_REF_STATUS       = ['required','optional','null'];
+
+const REF_LABEL_TO_ID = { 'ref1':1, 'ref2':2, 'ref3':3, 'ref4':4, 'ref5':5 };
+
+let uploadParsedData = null;
+let uploadValidRows = [];
+
+function openUploadModal() {
+  document.getElementById('uploadModal').classList.add('open');
+  resetUploadModal();
+}
+
+function closeUploadModal() {
+  document.getElementById('uploadModal').classList.remove('open');
+  resetUploadModal();
+}
+
+function resetUploadModal() {
+  uploadParsedData = null;
+  uploadValidRows = [];
+  document.getElementById('uploadFileInput').value = '';
+  document.getElementById('uploadDropzone').style.display = 'block';
+  document.getElementById('uploadFileInfo').style.display = 'none';
+  document.getElementById('uploadResults').style.display = 'none';
+  document.getElementById('uploadConfirmBtn').style.display = 'none';
+}
+
+function formatFileSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function handleFileDrop(event) {
+  const file = event.dataTransfer.files[0];
+  if (!file) return;
+  const input = document.getElementById('uploadFileInput');
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  input.files = dt.files;
+  handleFileSelect(input);
+}
+
+function handleFileSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('uploadFileName').textContent = file.name;
+  document.getElementById('uploadFileSize').textContent = formatFileSize(file.size);
+  document.getElementById('uploadDropzone').style.display = 'none';
+  document.getElementById('uploadFileInfo').style.display = 'block';
+  document.getElementById('uploadResults').style.display = 'none';
+  document.getElementById('uploadConfirmBtn').style.display = 'none';
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const firstLine = text.split('\n')[0];
+    const sep = firstLine.includes('\t') ? '\t' : ',';
+    const lines = text.split('\n').map(l => l.replace(/\r/g, '')).filter(l => l.trim());
+    const rawHeaders = lines[0].split(sep).map(h => h.trim());
+    const headers = rawHeaders.map(h => {
+      const norm = normalizeHeader(h);
+      return HEADER_MAP[norm] || norm;
+    });
+    const rows = lines.slice(1)
+      .map(line => {
+        const vals = line.split(sep).map(v => v.trim());
+        const obj = {};
+        headers.forEach((h, i) => { obj[h] = vals[i] !== undefined ? vals[i] : ''; });
+        return obj;
+      })
+      .filter(r => Object.values(r).some(v => v !== ''));
+    uploadParsedData = { headers, rows };
+    runUploadValidation();
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function clearUploadFile() {
+  document.getElementById('uploadFileInput').value = '';
+  document.getElementById('uploadDropzone').style.display = 'block';
+  document.getElementById('uploadFileInfo').style.display = 'none';
+  document.getElementById('uploadResults').style.display = 'none';
+  document.getElementById('uploadConfirmBtn').style.display = 'none';
+  uploadParsedData = null;
+  uploadValidRows = [];
+}
+
+function runUploadValidation() {
+  if (!uploadParsedData) return;
+  const { headers, rows } = uploadParsedData;
+
+  // ── STEP 1: Field / Header Validation ──
+  const step1Errors = [];
+  const MAPPED_COLS = Object.values(HEADER_MAP);
+  const missingCols = MAPPED_COLS.filter(c => !headers.includes(c));
+  if (missingCols.length > 0) {
+    missingCols.forEach(c => step1Errors.push(`Missing column: <b>${c}</b>`));
+  }
+  const extraCols = headers.filter(h => !MAPPED_COLS.includes(h));
+
+  // ── STEP 2: Row Validation ──
+  const seenCodes = {};
+  const rowResults = rows.map((row, idx) => {
+    const rowNum = idx + 1;
+    const errors = [];
+
+    // entity (company code)
+    if (!VALID_UPLOAD_COMPANIES.includes(row.entity)) {
+      errors.push(`Entity "${row.entity}" is invalid (must be 1000/1010/1020/1030)`);
+    }
+    // event_code
+    if (!row.event_code) {
+      errors.push('Event code is required');
+    } else if (row.event_code.length > 10) {
+      errors.push(`Event code max 10 chars (got ${row.event_code.length})`);
+    }
+    // event_name
+    if (!row.event_name) errors.push('Event Name is required');
+
+    // GL codes
+    const debitGL  = GL_DATA.find(g => g.code === row.dr_account_number);
+    const creditGL = GL_DATA.find(g => g.code === row.cr_account_number);
+    if (!row.dr_account_number)  errors.push('Dr Account Number is required');
+    else if (!debitGL)           errors.push(`Dr Account Number "${row.dr_account_number}" not found in GL master`);
+    if (!row.cr_account_number)  errors.push('Cr Account Number is required');
+    else if (!creditGL)          errors.push(`Cr Account Number "${row.cr_account_number}" not found in GL master`);
+
+    // Logic Dr / Cr validation
+    ['dr','cr'].forEach(side => {
+      const logicKey = `logic_${side}`;
+      const valueKey = side === 'dr' ? 'dr_value' : 'cr_value';
+      const logic = row[logicKey];
+      const value = row[valueKey];
+      if (!logic) return; // optional
+      const algoL = logic.toLowerCase();
+      if (!VALID_ALGO_STRINGS.includes(algoL)) {
+        errors.push(`Logic ${side.toUpperCase()} "${logic}" is invalid (use: Look up from ref / Look up from Branch contract / Fixed value)`);
+      } else if (algoL === 'fixed value' && !value) {
+        errors.push(`${side.toUpperCase()} value is required when Logic is "Fixed value"`);
+      } else if (algoL === 'look up from ref') {
+        if (!value) {
+          errors.push(`${side.toUpperCase()} value (reference field) is required when Logic is "Look up from ref"`);
+        } else if (!VALID_REF_NAMES.includes(value.toLowerCase())) {
+          errors.push(`${side.toUpperCase()} value "${value}" is invalid (use Ref1–Ref5)`);
+        }
+      }
+    });
+
+    // ref1 remark is required
+    if (!row.ref1_remark) errors.push('ref1 remark is required');
+
+    // ref2–ref5 status
+    [2,3,4,5].forEach(n => {
+      const status = (row[`reference${n}`] || '').toLowerCase();
+      if (status && !VALID_REF_STATUS.includes(status)) {
+        errors.push(`Reference${n} "${row[`reference${n}`]}" is invalid (use Required/Optional/Null)`);
+      }
+    });
+
+    // Duplicate within file
+    const cc = row.entity;
+    const ec = (row.event_code || '').toUpperCase();
+    if (cc && ec) {
+      const key = cc + '|' + ec;
+      if (seenCodes[key]) {
+        errors.push(`Duplicate event code "${ec}" for entity ${cc} in this file`);
+      } else {
+        seenCodes[key] = true;
+      }
+      if (events.find(e => e.companyCode === cc && e.eventCode === ec)) {
+        errors.push(`Event code "${ec}" already exists for entity ${cc}`);
+      }
+    }
+
+    return { rowNum, row, errors, valid: errors.length === 0, debitGL, creditGL };
+  });
+
+  uploadValidRows = rowResults.filter(r => r.valid);
+
+  // ── Render Step 1 ──
+  const step1Content = document.getElementById('uploadStep1Content');
+  const step1Badge   = document.getElementById('uploadStep1Badge');
+  if (step1Errors.length > 0) {
+    step1Badge.innerHTML = '✗';
+    step1Badge.className = 'step-badge step-badge-fail';
+    step1Content.innerHTML = `<ul class="upload-error-list" style="margin-top:0;">${step1Errors.map(e => `<li>${e}</li>`).join('')}</ul>`;
+  } else {
+    step1Badge.innerHTML = '✓';
+    step1Badge.className = 'step-badge step-badge-pass';
+    step1Content.innerHTML = `
+      <div style="color:#065F46;font-size:13px;font-weight:500;margin-bottom:6px;">
+        All ${REQUIRED_UPLOAD_COLS.length} required columns found — ${rows.length} data row${rows.length !== 1 ? 's' : ''} detected.
+      </div>
+      ${extraCols.length > 0 ? `<div style="font-size:12px;color:var(--text-secondary);">Extra columns ignored: ${extraCols.join(', ')}</div>` : ''}`;
+  }
+
+  // ── Render Step 2 ──
+  const step2Content = document.getElementById('uploadStep2Content');
+  const step2Badge   = document.getElementById('uploadStep2Badge');
+
+  if (step1Errors.length > 0) {
+    step2Badge.innerHTML = '—';
+    step2Badge.className = 'step-badge step-badge-pending';
+    step2Content.innerHTML = `<div style="font-size:13px;color:var(--text-secondary);padding:4px 0;">Fix column errors in Step 1 before row validation can run.</div>`;
+    document.getElementById('uploadResults').style.display = 'block';
+    document.getElementById('uploadConfirmBtn').style.display = 'none';
+    return;
+  }
+
+  const validCount = rowResults.filter(r => r.valid).length;
+  const errorCount = rowResults.filter(r => !r.valid).length;
+
+  if (errorCount === 0 && validCount > 0) {
+    step2Badge.innerHTML = '✓';
+    step2Badge.className = 'step-badge step-badge-pass';
+  } else if (validCount > 0) {
+    step2Badge.innerHTML = '!';
+    step2Badge.className = 'step-badge step-badge-warn';
+  } else {
+    step2Badge.innerHTML = '✗';
+    step2Badge.className = 'step-badge step-badge-fail';
+  }
+
+  const fmtLogic = (logic, value) => {
+    if (!logic) return '<span style="color:var(--text-secondary);font-size:10px;">—</span>';
+    let html = `<div style="font-size:11px;font-weight:600;">${logic}</div>`;
+    if (value) html += `<div style="font-size:10px;color:var(--text-secondary);">${value}</div>`;
+    return html;
+  };
+  const fmtRefN = (row, n) => {
+    const status = (row[`reference${n}`] || '').toLowerCase();
+    const remark = row[`ref${n}_remark`] || '';
+    if (!status || status === 'null')
+      return '<span style="color:var(--text-secondary);font-size:10px;">Null</span>';
+    const label = status === 'required'
+      ? '<span style="font-size:10px;font-weight:700;color:#065F46;">Required</span>'
+      : '<span style="font-size:10px;color:var(--text-secondary);">Optional</span>';
+    return `${label}${remark ? `<div style="font-size:10px;color:var(--text-primary);margin-top:2px;">${remark}</div>` : ''}`;
+  };
+
+  step2Content.innerHTML = `
+    <div class="validation-summary">
+      <div class="val-stat val-stat-valid">✓ ${validCount} row${validCount !== 1 ? 's' : ''} valid</div>
+      ${errorCount > 0 ? `<div class="val-stat val-stat-error">✗ ${errorCount} row${errorCount !== 1 ? 's' : ''} with errors</div>` : ''}
+    </div>
+    <div style="max-height:360px;overflow-y:auto;overflow-x:auto;border:1px solid var(--border);border-radius:8px;">
+      <table class="upload-preview-table">
+        <thead>
+          <tr>
+            <th style="width:40px;position:sticky;left:0;z-index:2;background:var(--bg-secondary);">Row</th>
+            <th style="width:76px;position:sticky;left:40px;z-index:2;background:var(--bg-secondary);">Status</th>
+            <th style="width:80px;">Entity</th>
+            <th style="width:100px;">Event Code</th>
+            <th style="width:160px;">Event Name</th>
+            <th style="width:140px;">Dr GL</th>
+            <th style="width:140px;">Cr GL</th>
+            <th style="width:150px;">Logic Dr</th>
+            <th style="width:150px;">Logic Cr</th>
+            <th style="width:110px;">Dr Sub-Ledger</th>
+            <th style="width:110px;">Cr Sub-Ledger</th>
+            <th style="width:120px;">Ref1 Remark</th>
+            <th style="width:110px;">Ref2</th>
+            <th style="width:110px;">Ref3</th>
+            <th style="width:110px;">Ref4</th>
+            <th style="width:110px;">Ref5</th>
+            <th style="min-width:200px;">Issues</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowResults.map(r => `
+            <tr class="${r.valid ? 'upload-row-valid' : 'upload-row-error'}">
+              <td style="color:var(--text-secondary);font-size:11px;position:sticky;left:0;background:${r.valid ? '#F0FDF4' : '#FFF5F5'};">${r.rowNum}</td>
+              <td style="position:sticky;left:40px;background:${r.valid ? '#F0FDF4' : '#FFF5F5'};">${r.valid
+                ? '<span class="status-badge status-active">Valid</span>'
+                : '<span class="status-badge status-inactive">Error</span>'}</td>
+              <td><span class="badge badge-company mono">${r.row.entity || '—'}</span></td>
+              <td><span class="mono event-code">${r.row.event_code || '—'}</span></td>
+              <td>${r.row.event_name || '—'}</td>
+              <td><span class="mono" style="font-size:11px;">${r.row.dr_account_number || '—'}</span></td>
+              <td><span class="mono" style="font-size:11px;">${r.row.cr_account_number || '—'}</span></td>
+              <td>${fmtLogic(r.row.logic_dr, r.row.dr_value)}</td>
+              <td>${fmtLogic(r.row.logic_cr, r.row.cr_value)}</td>
+              <td><span style="font-size:11px;">${r.row.dr_sub_ledger || '—'}</span></td>
+              <td><span style="font-size:11px;">${r.row.cr_sub_ledger || '—'}</span></td>
+              <td style="font-size:11px;">${r.row.ref1_remark || '—'}</td>
+              <td>${fmtRefN(r.row, 2)}</td>
+              <td>${fmtRefN(r.row, 3)}</td>
+              <td>${fmtRefN(r.row, 4)}</td>
+              <td>${fmtRefN(r.row, 5)}</td>
+              <td>${r.errors.length > 0
+                ? `<ul class="upload-error-list">${r.errors.map(e => `<li>${e}</li>`).join('')}</ul>`
+                : '<span style="color:#065F46;font-size:11px;">—</span>'}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+
+  document.getElementById('uploadResults').style.display = 'block';
+
+  // Confirm button
+  const confirmBtn = document.getElementById('uploadConfirmBtn');
+  if (validCount > 0 && step1Errors.length === 0) {
+    confirmBtn.style.display = 'inline-flex';
+    confirmBtn.textContent = 'Confirm Import';
+  } else {
+    confirmBtn.style.display = 'none';
+  }
+}
+
+function buildMappingsFromRow(row, gl, side) {
+  if (!gl) return [];
+  const mappings = [];
+  const attrs = getTargetAttrsForGL(gl);
+  if (!attrs || attrs.length === 0) return mappings;
+
+  const logicKey    = side === 'debit' ? 'logic_dr'    : 'logic_cr';
+  const valueKey    = side === 'debit' ? 'dr_value'    : 'cr_value';
+  const subLedgerKey= side === 'debit' ? 'dr_sub_ledger': 'cr_sub_ledger';
+
+  const logic       = row[logicKey];
+  const value       = row[valueKey];
+  const subLedger   = row[subLedgerKey];
+
+  // PC / CC mapping
+  const pcAttr = attrs.find(a => a.id === 1);
+  const ccAttr = attrs.find(a => a.id === 2);
+  const targetAttr = pcAttr || ccAttr;
+
+  if (logic && targetAttr) {
+    const algoL = logic.toLowerCase();
+    let algoId = null, refId = null, defaultValue = '';
+    if (algoL === 'fixed value') {
+      algoId = 1; defaultValue = value || '';
+    } else if (algoL === 'look up from ref') {
+      algoId = targetAttr.id === 1 ? 2 : 3;
+      refId  = REF_LABEL_TO_ID[(value || '').toLowerCase()] || null;
+    } else if (algoL === 'look up from branch contract') {
+      algoId = targetAttr.id === 1 ? 4 : 5;
+    }
+    if (algoId) mappings.push({ refId, algoId, targetId: targetAttr.id, defaultValue });
+  }
+
+  // Sub-ledger (Customer / Vendor) — Fixed value only
+  const slAttr = attrs.find(a => a.id === 3) || attrs.find(a => a.id === 4);
+  if (slAttr && subLedger) {
+    mappings.push({ refId: null, algoId: 1, targetId: slAttr.id, defaultValue: subLedger });
+  }
+
+  return mappings;
+}
+
+function confirmUpload() {
+  if (uploadValidRows.length === 0) return;
+  let nextId = events.length > 0 ? Math.max(...events.map(e => +e.id || 0)) + 1 : 1;
+
+  uploadValidRows.forEach(({ row, debitGL, creditGL }) => {
+    const referenceFields = [
+      { id: nextId * 100 + 1, fieldId: 1, isMandatory: true, remark: row.ref1_remark || '' },
+    ];
+    [2,3,4,5].forEach(n => {
+      const status = (row[`reference${n}`] || '').toLowerCase();
+      if (status === 'required' || status === 'optional') {
+        referenceFields.push({
+          id: nextId * 100 + n,
+          fieldId: n,
+          isMandatory: status === 'required',
+          remark: row[`ref${n}_remark`] || '',
+        });
+      }
+    });
+
+    events.push({
+      id: nextId++,
+      companyCode:         row.entity,
+      eventCode:           row.event_code.toUpperCase(),
+      eventName:           row.event_name,
+      isRequiredInternalNo: false,
+      isAutoPostSAP:        false,
+      isActive:             true,
+      debitGL,
+      creditGL,
+      referenceFields,
+      debitMappings:  buildMappingsFromRow(row, debitGL, 'debit'),
+      creditMappings: buildMappingsFromRow(row, creditGL, 'credit'),
+    });
+  });
+
+  const count = uploadValidRows.length;
+  closeUploadModal();
+  setStatusFilter('active');
+  renderTable();
+  showToast(`${count} event${count !== 1 ? 's' : ''} imported successfully.`);
 }
 
 // ════════════════════════════════════════════

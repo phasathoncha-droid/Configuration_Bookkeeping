@@ -101,7 +101,7 @@ Quick reference only — see `ui-standards.md` for complete specs:
 
 - IDs are numeric integers
 - All reference field options: `Reference1` through `Reference6` (id 1–6)
-- Algorithm options: `Fixed Value` (1), `Look Up Cost Center` (2), `Look Up Profit Center` (3)
+- Algorithm options: `Fixed Value` (1), `Look Up Profit Center by Unit Code` (2), `Look Up Cost Center by Unit Code` (3), `Look Up Profit Center by Contract Number` (4), `Look Up Cost Center by Contract Number` (5)
 - Target attribute options: `Profit Center` (1), `Cost Center` (2), `Customer` (3), `Vendor` (4)
 - Company codes: `1000`, `1010`, `1020`, `1030`
 - GL codes are 10-digit strings (e.g., `1211100100`)

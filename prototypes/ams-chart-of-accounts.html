@@ -552,6 +552,7 @@
     <button class="tab-btn active" onclick="switchTab('coa')" id="tab-coa">Chart of Account</button>
     <button class="tab-btn" onclick="switchTab('fsgroup')" id="tab-fsgroup">FS Group</button>
     <button class="tab-btn" onclick="switchTab('fstype')" id="tab-fstype">FS Type</button>
+    <button class="tab-btn" onclick="switchTab('companycode')" id="tab-companycode">Company Code</button>
   </div>
 
   <!-- Tab: Chart of Account -->
@@ -582,6 +583,13 @@
             <option value="inactive">Inactive</option>
             <option value="all">All Status</option>
           </select>
+          <button class="btn btn-secondary" onclick="exportCoa()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-right:4px;">
+              <path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 10v1.5A1.5 1.5 0 003.5 13h7a1.5 1.5 0 001.5-1.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Export
+          </button>
           <button class="btn btn-primary" onclick="openCoaCreateModal()">Create New</button>
         </div>
       </div>
@@ -705,6 +713,104 @@
     </div>
   </div>
 
+  <!-- Tab: Company Code -->
+  <div class="tab-panel" id="panel-companycode">
+    <div class="card">
+      <!-- Toolbar -->
+      <div class="table-toolbar">
+        <div class="table-search-wrap">
+          <span class="table-search-icon">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <circle cx="5.5" cy="5.5" r="4" stroke="#378ADD" stroke-width="1.5"/>
+              <line x1="8.7" y1="8.7" x2="11.5" y2="11.5" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input
+            class="table-search-input"
+            id="ccSearchInput"
+            type="text"
+            placeholder="Search company code or entity..."
+            oninput="onCcSearch(this.value)"
+            autocomplete="off"
+          />
+          <button class="table-search-clear" id="ccSearchClear" onclick="clearCcSearch()" title="Clear search">✕</button>
+        </div>
+        <div class="toolbar-right">
+          <select class="form-control status-filter-select" id="ccStatusFilter" onchange="setCcStatusFilter(this.value)">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="all">All Status</option>
+          </select>
+          <button class="btn btn-primary" onclick="openCcCreateModal()">Create New</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table id="ccTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Company Code</th>
+              <th>Entity Code</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ccTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Company Code Modal -->
+<div class="modal-backdrop" id="ccModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="ccModalTitle">Create New Company Code</div>
+        <div class="modal-subtitle" id="ccModalSubtitle">Fill in the details below to create a new Company Code</div>
+      </div>
+      <button class="modal-close" onclick="closeCcModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="ccModalAlertArea"></div>
+      <div class="layer-card">
+        <div class="layer-card-header">
+          <span class="layer-card-title">Company Code Details</span>
+          <div class="toggle-wrap" id="ccStatusToggleWrap" style="display:none;">
+            <span style="font-size:13px;font-weight:600;color:var(--text-secondary);">Status</span>
+            <div class="toggle-track on" id="ccStatusToggle" onclick="ccToggleStatus()">
+              <div class="toggle-thumb"></div>
+            </div>
+            <span class="toggle-label on" id="ccStatusToggleLabel">Active</span>
+          </div>
+        </div>
+
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Company Code <span class="req">*</span></label>
+            <input type="text" class="form-control mono" id="ccFieldCompanyCode"
+              maxlength="20" placeholder="e.g. 1000"
+              autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Entity Code <span class="req">*</span></label>
+            <input type="text" class="form-control mono" id="ccFieldEntityCode"
+              maxlength="20" placeholder="e.g. NTB"
+              oninput="this.value=this.value.toUpperCase()"
+              autocomplete="off" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeCcModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCcCompanyCode()">Save Company Code</button>
+    </div>
+  </div>
 </div>
 
 <!-- FS Type Modal -->
@@ -1096,6 +1202,28 @@
         <td><button class="btn btn-edit btn-sm" onclick="openCoaEditModal(${a.id})">Edit</button></td>
       </tr>`;
     }).join('');
+  }
+
+  function exportCoa() {
+    const header = ['Account Number', 'Account Name (TH)', 'Account Name (EN)', 'FS Group', 'FS Name'];
+    const rows = coaAccounts.map(a => {
+      const fg = fsGroups.find(g => g.id === a.fsGroupId);
+      return [
+        a.accountNumber,
+        a.accountNameTh,
+        a.accountNameEn,
+        fg ? fg.groupCode : '',
+        fg ? fg.groupName : '',
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`);
+    });
+    const csv = [header.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'chart_of_accounts.csv';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   function onCoaSearch(val) {
@@ -1865,10 +1993,169 @@
     if (e.target === this) closeModal();
   });
 
+  // ── Company Code data ──
+  let companyCodes = [
+    { id:1, companyCode:'1000', entityCode:'NTB',   isActive:true },
+    { id:2, companyCode:'1010', entityCode:'NTBPL', isActive:true },
+    { id:3, companyCode:'1020', entityCode:'NTBI',  isActive:true },
+    { id:4, companyCode:'1030', entityCode:'NTBX',  isActive:true },
+  ];
+  let ccNextId = 5;
+  let ccStatusFilter = 'active';
+  let ccSearchTerm = '';
+  let ccEditingId = null;
+  let ccIsActive = true;
+
+  function renderCcTable() {
+    let filtered = [...companyCodes];
+    if (ccStatusFilter === 'active')   filtered = filtered.filter(c => c.isActive !== false);
+    if (ccStatusFilter === 'inactive') filtered = filtered.filter(c => c.isActive === false);
+    if (ccSearchTerm) {
+      const q = ccSearchTerm.toLowerCase();
+      filtered = filtered.filter(c =>
+        c.companyCode.toLowerCase().includes(q) ||
+        c.entityCode.toLowerCase().includes(q)
+      );
+    }
+    const tbody = document.getElementById('ccTableBody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5">
+        <div class="empty-state"><div class="empty-icon">📂</div><p>No company codes found.</p></div>
+      </td></tr>`;
+      return;
+    }
+    tbody.innerHTML = filtered.map((c, i) => {
+      const statusCls   = c.isActive !== false ? 'status-active' : 'status-inactive';
+      const statusLabel = c.isActive !== false ? 'Active' : 'Inactive';
+      const rowStyle    = c.isActive !== false ? '' : 'opacity:0.7;';
+      return `<tr style="${rowStyle}">
+        <td style="color:var(--text-secondary);font-size:12px;">${i + 1}</td>
+        <td><span class="mono">${escHtml(c.companyCode)}</span></td>
+        <td><span class="mono">${escHtml(c.entityCode)}</span></td>
+        <td><span class="status-badge ${statusCls}">${statusLabel}</span></td>
+        <td><button class="btn btn-edit btn-sm" onclick="openCcEditModal(${c.id})">Edit</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function onCcSearch(val) {
+    ccSearchTerm = val;
+    const clearBtn = document.getElementById('ccSearchClear');
+    if (val) clearBtn.classList.add('visible'); else clearBtn.classList.remove('visible');
+    renderCcTable();
+  }
+  function clearCcSearch() {
+    document.getElementById('ccSearchInput').value = '';
+    document.getElementById('ccSearchClear').classList.remove('visible');
+    ccSearchTerm = '';
+    renderCcTable();
+  }
+  function setCcStatusFilter(val) {
+    ccStatusFilter = val;
+    renderCcTable();
+  }
+
+  function openCcCreateModal() {
+    ccEditingId = null;
+    ccIsActive = true;
+    document.getElementById('ccModalTitle').textContent = 'Create New Company Code';
+    document.getElementById('ccModalSubtitle').textContent = 'Fill in the details below to create a new Company Code';
+    document.getElementById('ccFieldCompanyCode').value = '';
+    document.getElementById('ccFieldEntityCode').value = '';
+    document.getElementById('ccStatusToggleWrap').style.display = 'none';
+    document.getElementById('ccModalAlertArea').innerHTML = '';
+    document.getElementById('ccModal').classList.add('open');
+  }
+
+  function openCcEditModal(id) {
+    const c = companyCodes.find(x => x.id === id);
+    if (!c) return;
+    ccEditingId = id;
+    ccIsActive = c.isActive !== false;
+    document.getElementById('ccModalTitle').textContent = 'Edit Company Code';
+    document.getElementById('ccModalSubtitle').textContent = 'Update the details for this Company Code';
+    document.getElementById('ccFieldCompanyCode').value = c.companyCode;
+    document.getElementById('ccFieldEntityCode').value = c.entityCode;
+    document.getElementById('ccStatusToggleWrap').style.display = 'flex';
+    ccUpdateToggleUI();
+    document.getElementById('ccModalAlertArea').innerHTML = '';
+    document.getElementById('ccModal').classList.add('open');
+  }
+
+  function closeCcModal() {
+    document.getElementById('ccModal').classList.remove('open');
+  }
+
+  function ccToggleStatus() {
+    ccIsActive = !ccIsActive;
+    ccUpdateToggleUI();
+  }
+  function ccUpdateToggleUI() {
+    const track = document.getElementById('ccStatusToggle');
+    const label = document.getElementById('ccStatusToggleLabel');
+    if (ccIsActive) {
+      track.className = 'toggle-track on';
+      label.className = 'toggle-label on';
+      label.textContent = 'Active';
+    } else {
+      track.className = 'toggle-track off';
+      label.className = 'toggle-label';
+      label.textContent = 'Inactive';
+    }
+  }
+
+  function saveCcCompanyCode() {
+    const companyCode = document.getElementById('ccFieldCompanyCode').value.trim();
+    const entityCode  = document.getElementById('ccFieldEntityCode').value.trim().toUpperCase();
+
+    if (!companyCode || !entityCode) {
+      document.getElementById('ccModalAlertArea').innerHTML = `
+        <div class="alert alert-danger">
+          <span>Please fill in all required fields.</span>
+          <button class="alert-close" onclick="this.closest('.alert').remove()">✕</button>
+        </div>`;
+      return;
+    }
+
+    const isDuplicate = companyCodes.some(c =>
+      c.companyCode === companyCode && c.isActive !== false && c.id !== ccEditingId
+    );
+    if (isDuplicate) {
+      document.getElementById('ccModalAlertArea').innerHTML = `
+        <div class="alert alert-danger">
+          <span>Company Code "${companyCode}" is already in use.</span>
+          <button class="alert-close" onclick="this.closest('.alert').remove()">✕</button>
+        </div>`;
+      return;
+    }
+
+    const isCreate = ccEditingId === null;
+    if (isCreate) {
+      companyCodes.push({ id: ccNextId++, companyCode, entityCode, isActive: true });
+      console.log('=== COMPANY CODE API PAYLOAD ===', JSON.stringify({ companyCode, entityCode }, null, 2));
+    } else {
+      const idx = companyCodes.findIndex(c => c.id === ccEditingId);
+      if (idx === -1) return;
+      companyCodes[idx].companyCode = companyCode;
+      companyCodes[idx].entityCode  = entityCode;
+      companyCodes[idx].isActive    = ccIsActive;
+      console.log('=== COMPANY CODE API PAYLOAD ===', JSON.stringify({ companyCode, entityCode, isActive: ccIsActive }, null, 2));
+    }
+
+    closeCcModal();
+    renderCcTable();
+    showToast(isCreate ? 'Create successfully' : 'Edit successfully');
+  }
+
+  document.getElementById('ccModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCcModal();
+  });
+
   // ── Init ──
   renderFstTable();
   renderTable();
   renderCoaTable();
+  renderCcTable();
 </script>
 </body>
 </html>
